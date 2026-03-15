@@ -1,24 +1,34 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-sans: var(--font-dm-sans), system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
 
   --color-bg: #080604;
-  --color-surface: #151210;
-  --color-text: #f5f0eb;
-  --color-muted: #9a9390;
-  --color-accent: #ef6f2f;
-  --color-accent-hover: #f5843f;
-  --color-border: rgba(200, 170, 140, 0.08);
-  --color-border-strong: rgba(200, 170, 140, 0.15);
-  --color-glass: rgba(200, 170, 140, 0.04);
-  --color-glass-heavy: rgba(200, 170, 140, 0.08);
+  --color-surface: #131110;
+  --color-text: #f0ece8;
+  --color-muted: #8a8480;
+  --color-accent: #d4622a;
+  --color-accent-hover: #e07535;
+  --color-border: rgba(180, 160, 140, 0.1);
+  --color-border-strong: rgba(180, 160, 140, 0.18);
+
+  --color-accent-rgb: 212, 98, 42;
+  --color-glass-bg: rgba(200, 170, 140, 0.06);
+  --color-glass-border: rgba(200, 170, 140, 0.12);
+  --color-glass-border-hover: rgba(200, 170, 140, 0.2);
 }
 
 html {
   color-scheme: dark;
-  scroll-behavior: smooth;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -30,5 +40,93 @@ body {
 }
 
 ::selection {
-  background-color: rgba(239, 111, 47, 0.3);
+  background-color: rgba(212, 98, 42, 0.3);
+}
+
+/* ── Fn overlay animations ── */
+.recording-pill {
+  background: radial-gradient(ellipse at 50% 0%, rgb(16, 11, 8) 0%, rgb(8, 6, 4) 100%);
+  border: 1px solid rgba(var(--color-accent-rgb), 0.07);
+  box-shadow: inset 0 1px 0 rgba(var(--color-accent-rgb), 0.04);
+  filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.5));
+}
+
+.recording-pill.active {
+  filter: drop-shadow(0 0 18px rgba(var(--color-accent-rgb), 0.2))
+    drop-shadow(0 4px 24px rgba(0, 0, 0, 0.45))
+    drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.5));
+  box-shadow: inset 0 1px 0 rgba(var(--color-accent-rgb), 0.04),
+    inset 0 0 16px rgba(var(--color-accent-rgb), 0.06);
+}
+
+.word-appear {
+  animation: word-appear 380ms ease-out;
+}
+
+@keyframes word-appear {
+  0% { opacity: 0; color: var(--color-accent); filter: blur(4px); }
+  35% { opacity: 1; color: var(--color-accent); filter: blur(0); }
+  100% { opacity: 1; color: rgba(255, 255, 255, 0.92); filter: blur(0); }
+}
+
+.progress-fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  background: linear-gradient(90deg,
+    rgba(var(--color-accent-rgb), 0.08) 0%,
+    rgba(var(--color-accent-rgb), 0.14) 70%,
+    rgba(var(--color-accent-rgb), 0.28) 95%,
+    rgba(var(--color-accent-rgb), 0.45) 100%
+  );
+  pointer-events: none;
+  transition: width 150ms ease-out;
+}
+
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0; right: -1px; bottom: 0;
+  width: 4px;
+  background: rgba(var(--color-accent-rgb), 0.5);
+  filter: blur(4px);
+}
+
+.thinking-dot {
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0.4;
+  box-shadow: 0 0 3px rgba(var(--color-accent-rgb), 0.6);
+  animation: thinking-fidget 1.4s ease-in-out infinite;
+  will-change: transform, opacity, box-shadow;
+}
+
+@keyframes thinking-fidget {
+  0%, 100% { transform: translate(0, 0.5px); opacity: 0.4; box-shadow: 0 0 3px rgba(var(--color-accent-rgb), 0.4); }
+  12% { transform: translate(0.8px, -4px); opacity: 1; box-shadow: 0 0 6px rgba(var(--color-accent-rgb), 0.9); }
+  24% { transform: translate(-0.3px, 0px); opacity: 0.35; box-shadow: 0 0 2px rgba(var(--color-accent-rgb), 0.3); }
+  38% { transform: translate(-0.7px, -3px); opacity: 0.95; box-shadow: 0 0 5px rgba(var(--color-accent-rgb), 0.8); }
+  50% { transform: translate(0.4px, 0.5px); opacity: 0.3; box-shadow: 0 0 2px rgba(var(--color-accent-rgb), 0.3); }
+  62% { transform: translate(0.5px, -4.5px); opacity: 1; box-shadow: 0 0 7px rgba(var(--color-accent-rgb), 1); }
+  74% { transform: translate(-0.4px, -1px); opacity: 0.4; box-shadow: 0 0 3px rgba(var(--color-accent-rgb), 0.4); }
+  88% { transform: translate(0.2px, -3.5px); opacity: 0.9; box-shadow: 0 0 5px rgba(var(--color-accent-rgb), 0.7); }
+}
+
+/* Waveform stick animation for recording state */
+@keyframes waveform-stick {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+/* App simulator glass panel */
+.glass-panel {
+  background: var(--color-glass-bg);
+  border: 1px solid var(--color-glass-border);
+}
+
+.glass-panel-solid {
+  background: #1c1916;
+  border: 1px solid var(--color-glass-border);
 }
