@@ -1,136 +1,40 @@
 "use client";
 
-import { motion } from "motion/react";
+import { useState } from "react";
+import { motion, MotionConfig } from "motion/react";
+import SimulatedApp from "./components/SimulatedApp";
+import FnOverlay from "./components/FnOverlay";
 
 const FEATURES = [
   {
-    title: "100% Local",
+    title: "Local or Cloud — You Choose",
     description:
-      "Every transcription runs on-device. Your voice never leaves your Mac.",
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <rect x="2" y="6" width="20" height="12" rx="2" />
-        <path d="M6 10h0" />
-        <path d="M10 10h0" />
-        <path d="M14 10h0" />
-        <path d="M6 14h4" />
-      </svg>
-    ),
+      "Run transcription fully on-device for privacy, or bring your own API keys for cloud-powered accuracy. Flexible by design.",
   },
   {
     title: "Press & Speak",
     description:
-      "One keyboard shortcut to start. Speak naturally, get text instantly in any app.",
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-        <line x1="12" x2="12" y1="19" y2="22" />
-      </svg>
-    ),
+      "One keyboard shortcut to start. Hold, toggle, or always-on — speak naturally, get text instantly in any app.",
   },
   {
-    title: "99+ Languages",
+    title: "5 Local Engines",
     description:
-      "Whisper, Parakeet, Moonshine, SenseVoice — choose the engine that fits your language.",
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <circle cx="12" cy="12" r="10" />
-        <path d="M2 12h20" />
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-      </svg>
-    ),
+      "Whisper, Parakeet, Moonshine, SenseVoice, Breeze ASR — pick the engine that fits your language and speed needs.",
   },
   {
     title: "LLM Polish",
     description:
-      "Clean up transcriptions with AI. Fix grammar, reformat, or restructure — all optional.",
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
-      </svg>
-    ),
+      "Clean up transcriptions with OpenAI, Claude, Gemini, Groq, Ollama, or Apple Intelligence. Mild, medium, or aggressive — your call.",
   },
   {
-    title: "Multiple Engines",
+    title: "Dictionary & History",
     description:
-      "Whisper, Parakeet V2/V3, Moonshine, SenseVoice, Breeze ASR — or connect cloud APIs.",
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-        <line x1="4" x2="4" y1="22" y2="15" />
-      </svg>
-    ),
+      "Add custom terms so your jargon lands right. Full transcription history with daily stats and words-per-minute tracking.",
   },
   {
     title: "Native & Fast",
     description:
-      "Built with Tauri and Rust. Lightweight, instant startup, feels like a native macOS utility.",
-    icon: (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-      </svg>
-    ),
+      "Built with Tauri and Rust. Lightweight, instant startup, native macOS feel. Voice activity detection stops recording when you stop speaking.",
   },
 ];
 
@@ -139,357 +43,471 @@ const ENGINES = [
     name: "Whisper",
     variants: "Small, Medium, Turbo, Large",
     languages: "99+ languages",
-    badge: "Most popular",
+    note: "Most popular",
   },
   {
     name: "Parakeet",
     variants: "V2, V3",
-    languages: "English & 25 European languages",
-    badge: "NVIDIA",
+    languages: "English & 25 European",
+    note: "NVIDIA",
   },
   {
     name: "Moonshine",
-    variants: "Tiny, Small, Medium",
+    variants: "Base, V2 Tiny, V2 Small, V2 Medium",
     languages: "English",
-    badge: "Ultra-fast",
+    note: "Ultra-fast",
   },
   {
     name: "SenseVoice",
-    variants: "Standard",
-    languages: "Chinese, English, Japanese, Korean, Cantonese",
-    badge: "Multilingual",
+    variants: "Int8",
+    languages: "CJK, Cantonese, English",
+    note: "Multilingual",
   },
   {
     name: "Breeze ASR",
     variants: "Standard",
     languages: "Taiwanese Mandarin",
-    badge: "Specialized",
+    note: "Specialized",
   },
 ];
 
+const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0 },
 };
 
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+};
+
 export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <main>
-      {/* Nav */}
-      <nav className="fixed top-0 z-50 w-full border-b border-border backdrop-blur-xl bg-bg/80">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
-          <a href="/" className="flex items-center gap-2.5" aria-label="Handless home">
-            <img
-              src="/logo.png"
-              alt=""
-              width={28}
-              height={28}
-              className="rounded-md"
-            />
-            <span className="text-sm font-semibold tracking-tight">
-              Handless
-            </span>
-          </a>
-          <div className="flex items-center gap-6">
+    <MotionConfig reducedMotion="user">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
+      >
+        Skip to content
+      </a>
+
+      <main>
+        {/* Nav */}
+        <nav className="fixed top-0 z-50 w-full border-b border-border bg-bg">
+          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
             <a
-              href="#features"
-              className="text-sm text-muted transition-colors duration-200 hover:text-text"
+              href="/"
+              className="flex items-center gap-2"
+              aria-label="Handless home"
             >
-              Features
+              <img
+                src="/logo.png"
+                alt=""
+                width={24}
+                height={24}
+                className="rounded-sm"
+              />
+              <span className="text-sm font-medium tracking-tight">
+                Handless
+              </span>
             </a>
-            <a
-              href="#engines"
-              className="text-sm text-muted transition-colors duration-200 hover:text-text"
+
+            <div className="hidden sm:flex items-center gap-6">
+              <a
+                href="#features"
+                className="text-sm text-muted transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded"
+              >
+                Features
+              </a>
+              <a
+                href="#preview"
+                className="text-sm text-muted transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded"
+              >
+                Preview
+              </a>
+              <a
+                href="#engines"
+                className="text-sm text-muted transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded"
+              >
+                Engines
+              </a>
+              <a
+                href="https://github.com/ElwinLiu/handless/releases"
+                className="inline-flex h-8 items-center rounded-md bg-accent px-3.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              >
+                Download
+              </a>
+            </div>
+
+            <button
+              type="button"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              onClick={() => setMenuOpen((prev) => !prev)}
+              className="flex h-9 w-9 items-center justify-center rounded-md text-text hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:hidden"
             >
-              Engines
-            </a>
-            <a
-              href="https://github.com/nicepkg/handless/releases"
-              className="inline-flex h-8 items-center rounded-lg bg-accent px-3.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-            >
-              Download
-            </a>
+              {menuOpen ? (
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              ) : (
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  <line x1="4" y1="18" x2="20" y2="18" />
+                </svg>
+              )}
+            </button>
           </div>
-        </div>
-      </nav>
 
-      {/* Hero */}
-      <section className="relative flex min-h-[85vh] flex-col items-center justify-center overflow-hidden px-6 pt-14">
-        {/* Glow */}
-        <div
-          className="pointer-events-none absolute top-1/4 h-[500px] w-[500px] rounded-full opacity-20 blur-[120px]"
-          style={{ background: "radial-gradient(circle, #ef6f2f 0%, transparent 70%)" }}
-          aria-hidden="true"
-        />
-
-        <motion.div
-          className="relative z-10 flex flex-col items-center text-center"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            visible: { transition: { staggerChildren: 0.1 } },
-          }}
-        >
-          <motion.div variants={fadeUp} transition={{ duration: 0.5, ease: "easeOut" }}>
-            <img
-              src="/logo.png"
-              alt="Handless logo"
-              width={80}
-              height={80}
-              className="rounded-2xl"
-            />
-          </motion.div>
-
-          <motion.h1
-            className="mt-8 max-w-2xl text-5xl font-bold leading-tight tracking-tight sm:text-6xl"
-            style={{ textWrap: "balance" }}
-            variants={fadeUp}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            Speech to text,
-            <br />
-            <span className="text-accent">entirely on your Mac</span>
-          </motion.h1>
-
-          <motion.p
-            className="mt-5 max-w-lg text-lg leading-relaxed text-muted"
-            style={{ textWrap: "pretty" }}
-            variants={fadeUp}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            Press a shortcut, speak naturally, get text in any app. Fast, private, and
-            runs locally — your voice never leaves your machine.
-          </motion.p>
-
-          <motion.div
-            className="mt-8 flex items-center gap-4"
-            variants={fadeUp}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            <a
-              href="https://github.com/nicepkg/handless/releases"
-              className="inline-flex h-11 items-center gap-2 rounded-xl bg-accent px-6 text-base font-medium text-white transition-colors duration-200 hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" x2="12" y1="15" y2="3" />
-              </svg>
-              Download for Mac
-            </a>
-            <a
-              href="https://github.com/nicepkg/handless"
-              className="inline-flex h-11 items-center gap-2 rounded-xl border border-border-strong bg-glass px-6 text-base font-medium text-text transition-colors duration-200 hover:bg-glass-heavy focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-              </svg>
-              View on GitHub
-            </a>
-          </motion.div>
-
-          <motion.p
-            className="mt-4 text-xs text-muted/60"
-            variants={fadeUp}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            Free & open source &middot; macOS 12+
-          </motion.p>
-        </motion.div>
-      </section>
-
-      {/* Features */}
-      <section id="features" className="scroll-mt-16 px-6 py-24">
-        <div className="mx-auto max-w-5xl">
-          <motion.div
-            className="text-center"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeUp}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            <h2
-              className="text-3xl font-bold tracking-tight sm:text-4xl"
-              style={{ textWrap: "balance" }}
-            >
-              Everything You Need to Dictate
-            </h2>
-            <p className="mt-3 text-muted">
-              No setup, no cloud, no subscriptions. Just your voice.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
-          >
-            {FEATURES.map((feature) => (
-              <motion.div
-                key={feature.title}
-                className="group rounded-2xl border border-border bg-glass p-6 transition-colors duration-200 hover:border-border-strong hover:bg-glass-heavy"
-                variants={fadeUp}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-              >
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-glass-heavy text-accent">
-                  {feature.icon}
-                </div>
-                <h3 className="mt-4 text-base font-semibold">{feature.title}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted">
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Engines */}
-      <section id="engines" className="scroll-mt-16 px-6 py-24">
-        <div className="mx-auto max-w-5xl">
-          <motion.div
-            className="text-center"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeUp}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            <h2
-              className="text-3xl font-bold tracking-tight sm:text-4xl"
-              style={{ textWrap: "balance" }}
-            >
-              Choose Your Engine
-            </h2>
-            <p className="mt-3 text-muted">
-              5 local engines with different strengths. Pick what works for your language and speed needs.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
-          >
-            {ENGINES.map((engine) => (
-              <motion.div
-                key={engine.name}
-                className="rounded-2xl border border-border bg-glass p-5 transition-colors duration-200 hover:border-border-strong hover:bg-glass-heavy"
-                variants={fadeUp}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-              >
-                <div className="flex items-center gap-3">
-                  <h3 className="text-base font-semibold">{engine.name}</h3>
-                  <span className="rounded-md bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
-                    {engine.badge}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm text-muted">{engine.variants}</p>
-                <p className="mt-1 text-sm text-muted/70">{engine.languages}</p>
-              </motion.div>
-            ))}
-
-            {/* Cloud option card */}
-            <motion.div
-              className="rounded-2xl border border-dashed border-border-strong bg-transparent p-5"
-              variants={fadeUp}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-            >
-              <div className="flex items-center gap-3">
-                <h3 className="text-base font-semibold text-muted">Cloud APIs</h3>
-                <span className="rounded-md bg-glass-heavy px-2 py-0.5 text-xs font-medium text-muted">
-                  Optional
-                </span>
+          {menuOpen && (
+            <div className="border-t border-border px-6 pb-4 pt-3 sm:hidden">
+              <div className="flex flex-col gap-1">
+                <a
+                  href="#features"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-sm text-muted py-2 transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+                >
+                  Features
+                </a>
+                <a
+                  href="#preview"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-sm text-muted py-2 transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+                >
+                  Preview
+                </a>
+                <a
+                  href="#engines"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-sm text-muted py-2 transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+                >
+                  Engines
+                </a>
+                <a
+                  href="https://github.com/ElwinLiu/handless/releases"
+                  className="inline-flex h-10 items-center justify-center rounded-md bg-accent text-sm font-medium text-white mt-2 transition-colors duration-150 hover:bg-accent-hover"
+                >
+                  Download
+                </a>
               </div>
-              <p className="mt-2 text-sm text-muted/70">
-                Connect OpenAI Whisper or Soniox for cloud-powered transcription when you need it.
-              </p>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
+            </div>
+          )}
+        </nav>
 
-      {/* CTA */}
-      <section className="px-6 py-24">
-        <motion.div
-          className="mx-auto max-w-2xl text-center"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={fadeUp}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
-          <h2
-            className="text-3xl font-bold tracking-tight sm:text-4xl"
-            style={{ textWrap: "balance" }}
+        {/* Hero */}
+        <section id="main-content" className="px-6 pt-32 pb-20 sm:pt-40 sm:pb-28">
+          <motion.div
+            className="mx-auto max-w-6xl"
+            initial="hidden"
+            animate="visible"
+            variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
           >
-            Start Dictating Today
-          </h2>
-          <p className="mt-3 text-muted">
-            Free, open source, and ready in seconds.
-          </p>
-          <div className="mt-8">
-            <a
-              href="https://github.com/nicepkg/handless/releases"
-              className="inline-flex h-11 items-center gap-2 rounded-xl bg-accent px-6 text-base font-medium text-white transition-colors duration-200 hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+            <motion.h1
+              className="font-serif text-[clamp(3rem,8vw,6rem)] leading-[1] tracking-tight max-w-4xl"
+              variants={fadeUp}
+              transition={{ duration: 0.7, ease }}
             >
-              Download for Mac
-            </a>
-          </div>
-        </motion.div>
-      </section>
+              Speech to text,
+              <br />
+              <em className="text-accent">your way</em>
+            </motion.h1>
 
-      {/* Footer */}
-      <footer className="border-t border-border px-6 py-8">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <img
-              src="/logo.png"
-              alt=""
-              width={20}
-              height={20}
-              className="rounded"
-            />
-            <span className="text-xs text-muted">Handless</span>
-          </div>
-          <div className="flex items-center gap-5">
-            <a
-              href="https://github.com/nicepkg/handless"
-              className="text-xs text-muted transition-colors duration-200 hover:text-text"
-              aria-label="Handless on GitHub"
+            <motion.p
+              className="mt-6 max-w-md text-lg leading-relaxed text-muted"
+              variants={fadeUp}
+              transition={{ duration: 0.7, ease }}
             >
-              GitHub
-            </a>
-            <a
-              href="https://github.com/nicepkg/handless/releases"
-              className="text-xs text-muted transition-colors duration-200 hover:text-text"
+              Press a shortcut, speak naturally, get text in any app. Go fully
+              local for privacy or bring your own API keys for cloud
+              accuracy.
+            </motion.p>
+
+            <motion.div
+              className="mt-8 flex flex-wrap items-center gap-3"
+              variants={fadeUp}
+              transition={{ duration: 0.7, ease }}
             >
-              Releases
-            </a>
+              <a
+                href="https://github.com/ElwinLiu/handless/releases"
+                className="inline-flex h-11 items-center gap-2 rounded-lg bg-accent px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" x2="12" y1="15" y2="3" />
+                </svg>
+                Download for Mac
+              </a>
+              <a
+                href="https://github.com/ElwinLiu/handless"
+                className="inline-flex h-11 items-center gap-2 rounded-lg border border-border-strong px-5 text-sm font-medium text-text transition-colors duration-150 hover:border-muted focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+                View on GitHub
+              </a>
+            </motion.div>
+
+            <motion.p
+              className="mt-5 text-xs text-muted"
+              variants={fadeUp}
+              transition={{ duration: 0.7, ease }}
+            >
+              Free &amp; open source · macOS 12+
+            </motion.p>
+          </motion.div>
+        </section>
+
+        {/* Features */}
+        <section id="features" className="scroll-mt-16 px-6 py-20">
+          <motion.div
+            className="mx-auto max-w-6xl grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={fadeIn}
+            transition={{ duration: 0.6, ease }}
+          >
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <h2 className="font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] tracking-tight">
+                Everything you need to dictate
+              </h2>
+              <p className="mt-3 text-sm text-muted">
+                Local, cloud, or both. No subscriptions.
+              </p>
+            </div>
+
+            <div className="divide-y divide-border">
+              {FEATURES.map((feature) => (
+                <div
+                  key={feature.title}
+                  className="grid sm:grid-cols-[160px_1fr] gap-1 sm:gap-8 py-5 first:pt-0 last:pb-0"
+                >
+                  <h3 className="text-sm font-semibold">{feature.title}</h3>
+                  <p className="text-sm text-muted leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        {/* See it in action */}
+        <section id="preview" className="scroll-mt-16 px-6 py-20">
+          <motion.div
+            className="mx-auto max-w-6xl"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={fadeIn}
+            transition={{ duration: 0.6, ease }}
+          >
+            <div className="text-center mb-12">
+              <h2 className="font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] tracking-tight">
+                See it in action
+              </h2>
+              <p className="mt-3 text-sm text-muted max-w-md mx-auto">
+                Explore the app&apos;s interface. Click the Fn key to see real-time captioning.
+              </p>
+            </div>
+
+            <div className="grid lg:grid-cols-[1fr_auto] gap-12 lg:gap-16 items-start">
+              {/* Simulated app window */}
+              <motion.div
+                variants={fadeUp}
+                transition={{ duration: 0.7, ease }}
+              >
+                <SimulatedApp />
+              </motion.div>
+
+              {/* Fn Key overlay demo */}
+              <motion.div
+                className="flex flex-col items-center lg:sticky lg:top-32 lg:self-start pt-4"
+                variants={fadeUp}
+                transition={{ duration: 0.7, ease, delay: 0.1 }}
+              >
+                <div className="text-center mb-6">
+                  <p className="text-xs font-medium text-muted uppercase tracking-wider mb-2">
+                    Press & Speak
+                  </p>
+                  <p className="text-xs text-muted/60 max-w-[200px]">
+                    Hold the Fn key, speak naturally, get text instantly
+                  </p>
+                </div>
+                <FnOverlay />
+              </motion.div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Engines */}
+        <section id="engines" className="scroll-mt-16 px-6 py-20">
+          <motion.div
+            className="mx-auto max-w-6xl"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={fadeIn}
+            transition={{ duration: 0.6, ease }}
+          >
+            <h2 className="font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] tracking-tight">
+              Choose your engine
+            </h2>
+            <p className="mt-3 text-sm text-muted">
+              5 local engines. Pick what works for your language and speed.
+            </p>
+
+            <div className="mt-12 overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-border-strong">
+                    <th className="pb-3 pr-8 text-xs font-medium uppercase tracking-wider text-muted">
+                      Engine
+                    </th>
+                    <th className="pb-3 pr-8 text-xs font-medium uppercase tracking-wider text-muted">
+                      Variants
+                    </th>
+                    <th className="pb-3 pr-8 text-xs font-medium uppercase tracking-wider text-muted">
+                      Languages
+                    </th>
+                    <th className="pb-3 text-xs font-medium uppercase tracking-wider text-muted text-right">
+                      Note
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {ENGINES.map((engine) => (
+                    <tr key={engine.name}>
+                      <td className="py-3.5 pr-8 font-medium whitespace-nowrap">
+                        {engine.name}
+                      </td>
+                      <td className="py-3.5 pr-8 text-muted">
+                        {engine.variants}
+                      </td>
+                      <td className="py-3.5 pr-8 text-muted">
+                        {engine.languages}
+                      </td>
+                      <td className="py-3.5 text-right whitespace-nowrap">
+                        <span className="text-xs font-medium text-accent">
+                          {engine.note}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <p className="mt-8 text-sm text-muted">
+
+              Prefer cloud? Bring your own OpenAI or Soniox API key for
+              cloud-powered transcription with real-time streaming.
+            </p>
+          </motion.div>
+        </section>
+
+        {/* CTA */}
+        <section className="px-6 py-24">
+          <motion.div
+            className="mx-auto max-w-6xl"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={fadeIn}
+            transition={{ duration: 0.6, ease }}
+          >
+            <h2 className="font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] tracking-tight">
+              Start dictating today
+            </h2>
+            <p className="mt-3 text-sm text-muted">
+              No account needed. Download and start speaking.
+            </p>
+            <div className="mt-6">
+              <a
+                href="https://github.com/ElwinLiu/handless/releases"
+                className="inline-flex h-11 items-center gap-2 rounded-lg bg-accent px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              >
+                Download for Mac
+              </a>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-border px-6 py-8">
+          <div className="mx-auto flex max-w-6xl items-center justify-between">
+            <div className="flex items-center gap-2">
+              <img
+                src="/logo.png"
+                alt=""
+                width={18}
+                height={18}
+                className="rounded-sm"
+                loading="lazy"
+              />
+              <span className="text-xs text-muted">Handless</span>
+            </div>
+            <div className="flex items-center gap-5">
+              <a
+                href="https://github.com/ElwinLiu/handless"
+                className="text-xs text-muted transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+                aria-label="Handless on GitHub"
+              >
+                GitHub
+              </a>
+              <a
+                href="https://github.com/ElwinLiu/handless/releases"
+                className="text-xs text-muted transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+              >
+                Releases
+              </a>
+            </div>
           </div>
-        </div>
-      </footer>
-    </main>
+        </footer>
+      </main>
+    </MotionConfig>
   );
 }
