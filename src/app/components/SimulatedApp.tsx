@@ -67,7 +67,7 @@ function ModelsPage() {
       {tab === "myModels" ? (
         <div className="space-y-2">
           {/* Whisper Large v3 - Active */}
-          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border-2 border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 transition-all">
+          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/[0.06] transition-colors duration-150">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-[13px] font-semibold text-[#f0ece8]">
                 Whisper Large v3
@@ -80,7 +80,7 @@ function ModelsPage() {
               OpenAI&apos;s most accurate model. Best for multilingual use.
             </p>
             <div className="flex items-center gap-1.5">
-              <span className="flex items-center gap-1 text-[10px] text-blue-400/80 bg-blue-400/10 px-1.5 py-0.5 rounded">
+              <span className="flex items-center gap-1 text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 <svg
                   width="10"
                   height="10"
@@ -91,7 +91,7 @@ function ModelsPage() {
                 </svg>
                 99+ languages
               </span>
-              <span className="flex items-center gap-1 text-[10px] text-purple-400/80 bg-purple-400/10 px-1.5 py-0.5 rounded">
+              <span className="flex items-center gap-1 text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 <svg
                   width="10"
                   height="10"
@@ -102,17 +102,17 @@ function ModelsPage() {
                 </svg>
                 Translate
               </span>
-              <span className="flex items-center gap-1 text-[10px] text-[var(--color-accent)]/70 bg-[var(--color-accent)]/8 px-1.5 py-0.5 rounded">
+              <span className="flex items-center gap-1 text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 97%
               </span>
-              <span className="flex items-center gap-1 text-[10px] text-emerald-400/70 bg-emerald-400/8 px-1.5 py-0.5 rounded">
+              <span className="flex items-center gap-1 text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 72%
               </span>
             </div>
           </div>
 
           {/* OpenAI Cloud - Verified */}
-          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border-2 border-[rgba(200,170,140,0.12)] bg-[var(--color-glass-bg)] transition-all">
+          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border border-[rgba(200,170,140,0.12)] bg-[var(--color-glass-bg)] transition-colors duration-150">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-[13px] font-semibold text-[#f0ece8]">
                 OpenAI STT
@@ -133,17 +133,17 @@ function ModelsPage() {
               gpt-4o-transcribe
             </p>
             <div className="flex items-center gap-1.5">
-              <span className="flex items-center gap-1 text-[10px] text-blue-400/80 bg-blue-400/10 px-1.5 py-0.5 rounded">
+              <span className="flex items-center gap-1 text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 99+ languages
               </span>
-              <span className="flex items-center gap-1 text-[10px] text-purple-400/80 bg-purple-400/10 px-1.5 py-0.5 rounded">
+              <span className="flex items-center gap-1 text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 Translate
               </span>
             </div>
           </div>
 
           {/* Moonshine V2 - Available */}
-          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border-2 border-[rgba(200,170,140,0.12)] bg-[var(--color-glass-bg)] transition-all">
+          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border border-[rgba(200,170,140,0.12)] bg-[var(--color-glass-bg)] transition-colors duration-150">
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-[13px] font-semibold text-[#f0ece8]">
                 Moonshine V2 Small
@@ -156,7 +156,7 @@ function ModelsPage() {
               <span className="flex items-center gap-1 text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 English
               </span>
-              <span className="flex items-center gap-1 text-[10px] text-emerald-400/70 bg-emerald-400/8 px-1.5 py-0.5 rounded">
+              <span className="flex items-center gap-1 text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 95%
               </span>
             </div>
@@ -164,7 +164,7 @@ function ModelsPage() {
         </div>
       ) : (
         <div className="space-y-2">
-          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border-2 border-[rgba(200,170,140,0.12)] bg-[var(--color-glass-bg)]">
+          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border border-[rgba(200,170,140,0.12)] bg-[var(--color-glass-bg)]">
             <div className="flex items-center gap-2">
               <h3 className="text-[13px] font-semibold text-[#f0ece8]">
                 Parakeet V3
@@ -178,13 +178,13 @@ function ModelsPage() {
               languages.
             </p>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-blue-400/80 bg-blue-400/10 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 26 languages
               </span>
-              <span className="text-[10px] text-[var(--color-accent)]/70 bg-[var(--color-accent)]/8 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 96%
               </span>
-              <span className="text-[10px] text-emerald-400/70 bg-emerald-400/8 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 88%
               </span>
               <span className="flex items-center gap-1 text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded ml-auto">
@@ -200,7 +200,7 @@ function ModelsPage() {
               </span>
             </div>
           </div>
-          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border-2 border-[rgba(200,170,140,0.12)] bg-[var(--color-glass-bg)]">
+          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border border-[rgba(200,170,140,0.12)] bg-[var(--color-glass-bg)]">
             <div className="flex items-center gap-2">
               <h3 className="text-[13px] font-semibold text-[#f0ece8]">
                 SenseVoice Int8
@@ -210,10 +210,10 @@ function ModelsPage() {
               Alibaba&apos;s multilingual model. Optimized for CJK languages.
             </p>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] text-blue-400/80 bg-blue-400/10 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 5 languages
               </span>
-              <span className="text-[10px] text-[var(--color-accent)]/70 bg-[var(--color-accent)]/8 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded">
                 91%
               </span>
               <span className="flex items-center gap-1 text-[10px] text-[#f0ece8]/50 bg-[#8a8480]/10 px-1.5 py-0.5 rounded ml-auto">
@@ -229,7 +229,7 @@ function ModelsPage() {
               </span>
             </div>
           </div>
-          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border-2 border-[rgba(200,170,140,0.12)] bg-[var(--color-glass-bg)]">
+          <div className="flex flex-col rounded-xl px-3 py-2 gap-1.5 border border-[rgba(200,170,140,0.12)] bg-[var(--color-glass-bg)]">
             <h3 className="text-[13px] font-semibold text-[#f0ece8]">
               Breeze ASR
             </h3>
