@@ -18,17 +18,24 @@ const PANEL_COUNT = 2;
 const PANEL_INTERVAL = 25000;
 const springSnappy = { type: "spring" as const, stiffness: 300, damping: 25 };
 
-/** Actual Handless app palette (differs from website palette). */
+/** App palette — references site CSS variables so it adapts to the active theme. */
 const C = {
-  text: "#f5f0eb",
-  muted: "#9a9390",
-  accent: "#ef6f2f",
-  bg: "#080604",
-  surface: "#151210",
-  glassBg: "rgba(200,170,140,0.06)",
-  glassBorder: "rgba(200,170,140,0.12)",
+  text: "var(--color-text)",
+  muted: "var(--color-muted)",
+  accent: "var(--color-accent)",
+  bg: "var(--color-bg)",
+  surface: "var(--color-surface)",
+  glassBg: "var(--color-glass-bg)",
+  glassBorder: "var(--color-glass-border)",
   accentGlow:
-    "0 0 8px rgba(239,111,47,0.18), 0 0 2px rgba(239,111,47,0.1)",
+    "0 0 8px rgba(var(--color-accent-rgb),0.18), 0 0 2px rgba(var(--color-accent-rgb),0.1)",
+} as const;
+
+/** Colour with alpha — uses the RGB-channel CSS variables. */
+const ca = {
+  text: (a: number) => `rgba(var(--color-text-rgb),${a})`,
+  muted: (a: number) => `rgba(var(--color-muted-rgb),${a})`,
+  accent: (a: number) => `rgba(var(--color-accent-rgb),${a})`,
 } as const;
 
 /* ─── Phosphor icon SVG paths (regular + bold, 256×256 viewBox) ─── */
@@ -205,7 +212,7 @@ function Sidebar({ activeTabId }: { activeTabId: string }) {
                     <motion.div
                       layoutId="sim-sidebar-bg"
                       className="absolute inset-0 rounded-lg"
-                      style={{ background: "rgba(239,111,47,0.08)" }}
+                      style={{ background: "rgba(var(--color-accent-rgb),0.08)" }}
                       transition={springSnappy}
                     />
                     <motion.div
@@ -251,7 +258,7 @@ function TabBar({ tabs, active }: { tabs: string[]; active: string }) {
   return (
     <div
       className="flex gap-1 mb-4"
-      style={{ borderBottom: `1px solid ${C.muted}33` }}
+      style={{ borderBottom: `1px solid ${ca.muted(0.2)}` }}
     >
       {tabs.map((t) => (
         <span
@@ -262,7 +269,7 @@ function TabBar({ tabs, active }: { tabs: string[]; active: string }) {
               t === active
                 ? `2px solid ${C.accent}`
                 : "2px solid transparent",
-            color: t === active ? C.accent : `${C.text}80`,
+            color: t === active ? C.accent : ca.text(0.5),
           }}
         >
           {t}
@@ -336,8 +343,8 @@ function ModelsPanel({
             <div
               className="flex flex-col rounded-xl px-3 py-2 gap-1 text-left"
               style={{
-                border: `1px solid ${isActive ? `${C.accent}4d` : C.glassBorder}`,
-                background: isActive ? `${C.accent}0f` : C.glassBg,
+                border: `1px solid ${isActive ? ca.accent(0.3) : C.glassBorder}`,
+                background: isActive ? ca.accent(0.06) : C.glassBg,
                 transition: "border-color 400ms ease, background 400ms ease",
               }}
             >
@@ -355,27 +362,27 @@ function ModelsPanel({
                     style={
                       model.badge === "Verified"
                         ? { background: "rgba(40,200,64,0.15)", color: "#4ade80" }
-                        : { background: `${C.muted}1a`, color: `${C.text}80` }
+                        : { background: ca.muted(0.1), color: ca.text(0.5) }
                     }
                   >
                     <Icon d={ICONS.cloud} size={12} />
                   </span>
                 )}
                 {isActive && (
-                  <span className="text-xs px-2.5 py-0.5 rounded-md font-medium border border-[#ef6f2f]/15 bg-[#ef6f2f]/10 text-[#ef6f2f]">
+                  <span className="text-xs px-2.5 py-0.5 rounded-md font-medium" style={{ border: `1px solid ${ca.accent(0.15)}`, background: ca.accent(0.1), color: C.accent }}>
                     Active
                   </span>
                 )}
                 <div
                   className={`ml-auto p-1.5 rounded sim-caret${i === 0 && modelExpanded ? " open" : ""}`}
-                  style={{ color: `${C.text}40` }}
+                  style={{ color: ca.text(0.25) }}
                 >
                   <Icon d={ICONS.caretDown} size={16} />
                 </div>
               </div>
               <p
                 className="text-sm leading-snug"
-                style={{ color: `${C.text}99` }}
+                style={{ color: ca.text(0.6) }}
               >
                 {model.desc}
               </p>
@@ -390,7 +397,7 @@ function ModelsPanel({
                         style={{
                           background: C.glassBg,
                           border: `1px solid ${C.glassBorder}`,
-                          color: `${C.text}66`,
+                          color: ca.text(0.4),
                         }}
                       >
                         <span className="truncate">
@@ -399,7 +406,7 @@ function ModelsPanel({
                             <span className="sim-cursor" />
                           )}
                         </span>
-                        <Icon d={ICONS.copy} size={13} className="shrink-0 ml-2" style={{ color: `${C.muted}80` }} />
+                        <Icon d={ICONS.copy} size={13} className="shrink-0 ml-2" style={{ color: ca.muted(0.5) }} />
                       </div>
                       <div
                         data-cursor="model-name"
@@ -407,7 +414,7 @@ function ModelsPanel({
                         style={{
                           background: C.glassBg,
                           border: `1px solid ${C.glassBorder}`,
-                          color: `${C.text}cc`,
+                          color: ca.text(0.8),
                         }}
                       >
                         <span className="truncate">
@@ -422,7 +429,7 @@ function ModelsPanel({
                         className="text-sm font-medium shrink-0 px-4 py-1 rounded-lg"
                         style={{
                           color: verifyClicked ? "#4ade80" : C.accent,
-                          border: `1px solid ${verifyClicked ? "rgba(74,222,128,0.3)" : `${C.accent}40`}`,
+                          border: `1px solid ${verifyClicked ? "rgba(74,222,128,0.3)" : ca.accent(0.25)}`,
                           transition: "all 300ms ease",
                         }}
                       >
@@ -437,7 +444,7 @@ function ModelsPanel({
                           data-cursor="realtime"
                           className="w-4 h-4 rounded-[4px] border shrink-0 flex items-center justify-center"
                           style={{
-                            borderColor: realtimeChecked ? C.accent : `${C.muted}60`,
+                            borderColor: realtimeChecked ? C.accent : ca.muted(0.38),
                             background: realtimeChecked ? C.accent : "transparent",
                             transition: "all 300ms ease",
                           }}
@@ -448,19 +455,19 @@ function ModelsPanel({
                         </div>
                         <span
                           className={`text-sm font-medium${realtimeSwept ? " sim-sweep-text" : ""}`}
-                          style={realtimeSwept ? undefined : { color: `${C.text}b3` }}
+                          style={realtimeSwept ? undefined : { color: ca.text(0.7) }}
                         >
                           Real-time transcription
                         </span>
                       </label>
-                      <p className="text-xs ml-6 mt-0.5" style={{ color: `${C.muted}99` }}>
+                      <p className="text-xs ml-6 mt-0.5" style={{ color: ca.muted(0.6) }}>
                         Uses a WebSocket connection instead of file upload for lower latency
                       </p>
                     </div>
 
                     {/* Language */}
                     <div className="space-y-1">
-                      <span className="text-sm" style={{ color: `${C.text}b3` }}>
+                      <span className="text-sm" style={{ color: ca.text(0.7) }}>
                         Language
                       </span>
                       <div className="flex items-center gap-2">
@@ -472,9 +479,9 @@ function ModelsPanel({
                           }}
                         >
                           <span className="font-semibold" style={{ color: C.text }}>Auto detect</span>
-                          <Icon d={ICONS.caretDown} size={12} style={{ color: `${C.muted}80` }} />
+                          <Icon d={ICONS.caretDown} size={12} style={{ color: ca.muted(0.5) }} />
                         </div>
-                        <span className="text-xs" style={{ color: `${C.muted}99` }}>
+                        <span className="text-xs" style={{ color: ca.muted(0.6) }}>
                           Leave empty to auto detect
                         </span>
                       </div>
@@ -487,14 +494,14 @@ function ModelsPanel({
                         className="flex items-start gap-2 rounded-lg px-3 py-2 text-xs"
                         style={{
                           border: `1px solid ${C.glassBorder}`,
-                          color: glossaryChars > 0 ? `${C.text}cc` : `${C.muted}99`,
+                          color: glossaryChars > 0 ? ca.text(0.8) : ca.muted(0.6),
                           transition: "color 300ms ease",
                         }}
                       >
                         <div
                           className="w-3.5 h-3.5 rounded-[3px] border shrink-0 mt-0.5 flex items-center justify-center"
                           style={{
-                            borderColor: glossaryChars > 0 ? C.accent : `${C.muted}60`,
+                            borderColor: glossaryChars > 0 ? C.accent : ca.muted(0.38),
                             background: glossaryChars > 0 ? C.accent : "transparent",
                             transition: "all 300ms ease",
                           }}
@@ -514,10 +521,10 @@ function ModelsPanel({
 
                     {/* Temperature */}
                     <div className="space-y-1">
-                      <span className="text-sm" style={{ color: `${C.text}b3` }}>
+                      <span className="text-sm" style={{ color: ca.text(0.7) }}>
                         Temperature
                       </span>
-                      <p className="text-xs" style={{ color: `${C.muted}99` }}>
+                      <p className="text-xs" style={{ color: ca.muted(0.6) }}>
                         Higher values produce more random results (0-1). Only supported by whisper-1.
                       </p>
                       <div
@@ -540,8 +547,8 @@ function ModelsPanel({
                     key={tag}
                     className="flex items-center gap-1 text-xs px-1.5 py-0.5 rounded"
                     style={{
-                      color: `${C.text}80`,
-                      background: `${C.muted}1a`,
+                      color: ca.text(0.5),
+                      background: ca.muted(0.1),
                     }}
                   >
                     {tag === "Multi-language" && <Icon d={ICONS.globe} size={12} />}
@@ -645,11 +652,11 @@ function MiniWaveform() {
             style={{
               width: 2.5,
               height: h,
-              backgroundColor: `rgba(239,111,47,${alpha})`,
+              backgroundColor: `rgba(var(--color-accent-rgb),${alpha})`,
               transition: "height 90ms ease",
               boxShadow:
                 energy > 0.5
-                  ? `0 0 ${3 + energy * 10}px rgba(239,111,47,${energy * 0.3})`
+                  ? `0 0 ${3 + energy * 10}px rgba(var(--color-accent-rgb),${energy * 0.3})`
                   : "none",
             }}
           />
@@ -756,9 +763,9 @@ function PolishResult({ text }: { text: string }) {
       ref={ref}
       className="rounded-lg px-3 py-2 text-sm leading-snug whitespace-pre-line"
       style={{
-        background: "rgba(239,111,47,0.04)",
-        border: `1px solid rgba(239,111,47,0.12)`,
-        color: `${C.text}e6`,
+        background: "rgba(var(--color-accent-rgb),0.04)",
+        border: `1px solid rgba(var(--color-accent-rgb),0.12)`,
+        color: ca.text(0.9),
         animation: "sim-fade-in 400ms ease-out",
       }}
     >
@@ -812,14 +819,14 @@ function PolishPanel({
         >
           <div className="flex items-center justify-between px-3 py-2 rounded-lg">
             <div className="flex items-center gap-2 min-w-0">
-              <div style={{ color: `${C.muted}80` }}>
+              <div style={{ color: ca.muted(0.5) }}>
                 <Icon d={ICONS.caretDown} size={12} />
               </div>
               <span className="text-sm truncate">
-                <span className="font-semibold" style={{ color: `${C.text}b3` }}>
+                <span className="font-semibold" style={{ color: ca.text(0.7) }}>
                   Anthropic
                 </span>
-                <span style={{ color: `${C.muted}80` }}>
+                <span style={{ color: ca.muted(0.5) }}>
                   {" "}&middot; claude-sonnet-4-20250514
                 </span>
               </span>
@@ -840,7 +847,7 @@ function PolishPanel({
           >
             Prompts
           </h2>
-          <div className="p-1 rounded-lg" style={{ color: `${C.muted}80` }}>
+          <div className="p-1 rounded-lg" style={{ color: ca.muted(0.5) }}>
             <Icon d={ICONS.plus} size={14} />
           </div>
         </div>
@@ -868,13 +875,13 @@ function PolishPanel({
                   <div className="flex items-center gap-2 min-w-0">
                     <div
                       className={`sim-caret${isExpanded ? " open" : ""}`}
-                      style={{ color: `${C.muted}80` }}
+                      style={{ color: ca.muted(0.5) }}
                     >
                       <Icon d={ICONS.caretDown} size={12} />
                     </div>
                     <span
                       className={`text-sm font-semibold truncate${isLit ? " sim-sweep-text" : ""}`}
-                      style={isLit ? undefined : { color: `${C.text}4d` }}
+                      style={isLit ? undefined : { color: ca.text(0.3) }}
                     >
                       {prompt.name}
                     </span>
@@ -886,8 +893,8 @@ function PolishPanel({
                         data-cursor="fn-badge"
                         className="text-[11px] px-1.5 py-0.5 rounded-md font-mono inline-block"
                         style={{
-                          border: `1px solid ${showFnPress ? C.accent : `${C.accent}40`}`,
-                          background: showFnPress ? `${C.accent}30` : "transparent",
+                          border: `1px solid ${showFnPress ? C.accent : ca.accent(0.25)}`,
+                          background: showFnPress ? ca.accent(0.19) : "transparent",
                           color: C.accent,
                           animation: showFnPress
                             ? "sim-fn-press 500ms ease-out forwards"
@@ -901,7 +908,7 @@ function PolishPanel({
                       <span
                         className="text-xs px-2 py-0.5 rounded-md tracking-wide inline-block"
                         style={{
-                          border: `1px solid ${C.accent}40`,
+                          border: `1px solid ${ca.accent(0.25)}`,
                           color: C.accent,
                           animation: "sim-fn-pop 400ms cubic-bezier(0.34,1.56,0.64,1) forwards",
                         }}
@@ -913,8 +920,8 @@ function PolishPanel({
                       <span
                         className="text-[11px] px-2.5 py-0.5 rounded-md font-medium"
                         style={{
-                          background: `${C.muted}1a`,
-                          color: `${C.text}80`,
+                          background: ca.muted(0.1),
+                          color: ca.text(0.5),
                         }}
                       >
                         Built-in
@@ -924,8 +931,8 @@ function PolishPanel({
                 </div>
 
                 {/* Expanded prompt content — Aggressive prompt */}
-                {idx === 2 && (
-                  <div className={`sim-expand${isExpanded ? " open" : ""}`}>
+                {idx === 2 && isExpanded && (
+                  <div className="sim-expand open">
                     <div
                       className="px-3 pb-3 pt-1 space-y-3"
                       style={{ borderTop: `1px solid ${C.glassBorder}` }}
@@ -933,7 +940,7 @@ function PolishPanel({
                       <div className="space-y-1">
                         <label
                           className="text-[11px] font-medium uppercase tracking-wider block"
-                          style={{ color: `${C.muted}80` }}
+                          style={{ color: ca.muted(0.5) }}
                         >
                           Instructions
                         </label>
@@ -942,7 +949,7 @@ function PolishPanel({
                           style={{
                             background: C.glassBg,
                             border: `1px solid ${C.glassBorder}`,
-                            color: `${C.text}80`,
+                            color: ca.text(0.5),
                             maxHeight: 80,
                           }}
                         >
@@ -998,9 +1005,9 @@ function Dock({
               className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-200"
               style={{
                 background: isActive
-                  ? "rgba(239,111,47,0.15)"
+                  ? "rgba(var(--color-accent-rgb),0.15)"
                   : C.glassBg,
-                border: `1px solid ${isActive ? "rgba(239,111,47,0.3)" : C.glassBorder}`,
+                border: `1px solid ${isActive ? "rgba(var(--color-accent-rgb),0.3)" : C.glassBorder}`,
               }}
             >
               <Icon
@@ -1021,7 +1028,7 @@ function Dock({
             {/* Progress bar */}
             <div
               className="h-[2px] w-10 rounded-full overflow-hidden"
-              style={{ background: `${C.muted}20` }}
+              style={{ background: ca.muted(0.12) }}
             >
               <div
                 key={`${i}-${timerKey}`}
@@ -1356,7 +1363,7 @@ export default function SimulatedApp() {
         style={{
           border: `1px solid ${C.glassBorder}`,
           boxShadow:
-            "0 12px 48px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(200,170,140,0.06)",
+            `0 12px 48px rgba(0,0,0,0.25), 0 0 0 0.5px ${C.glassBorder}`,
           color: C.text,
           transform: "scale(0.85)",
           marginBottom: "-7.5%",
@@ -1414,7 +1421,7 @@ export default function SimulatedApp() {
           >
             <div
               className="flex justify-between items-center text-xs px-4 pb-2"
-              style={{ color: `${C.text}b3` }}
+              style={{ color: ca.text(0.7) }}
             >
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#4ade80]" />
@@ -1424,7 +1431,7 @@ export default function SimulatedApp() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  style={{ color: `${C.muted}99` }}
+                  style={{ color: ca.muted(0.6) }}
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>

@@ -12,44 +12,43 @@ const DEMO_RAW =
 const DEMO_PROCESSED =
   "There are a few things I wanted to mention about the project update:\n\n1. The backend migration will be completed by Friday next week.\n2. We managed to cut the response time down from 300 milliseconds to 50 milliseconds, which is significant.\n3. Most of the new API endpoints are already deployed to staging.";
 
-const WAVEFORM_STICKS = 28;
-
 type OverlayState = "idle" | "recording" | "thinking" | "done";
 
 /** Simulated waveform sticks with random heights */
-function WaveformSticks() {
-  const [sticks, setSticks] = useState<number[]>(() =>
-    Array.from({ length: WAVEFORM_STICKS }, () => Math.random()),
-  );
+function MiniWaveform() {
+  const [bars, setBars] = useState(() => Array.from({ length: 7 }, () => Math.random()));
 
   useEffect(() => {
     const id = setInterval(() => {
-      setSticks((prev) =>
+      setBars((prev) =>
         prev.map((v) => {
           const target = Math.random();
-          return v + (target - v) * 0.3;
+          return v + (target - v) * 0.35;
         }),
       );
-    }, 80);
+    }, 90);
     return () => clearInterval(id);
   }, []);
 
+  const envelope = [0.45, 0.7, 0.85, 1.0, 0.85, 0.7, 0.45];
+
   return (
-    <div className="flex items-center gap-[1px] h-5 mx-1">
-      {sticks.map((energy, i) => {
-        const height = 2 + energy * 16;
-        const alpha = 0.35 + energy * 0.5;
+    <div className="flex items-center gap-[2px] h-5 justify-center">
+      {bars.map((energy, i) => {
+        const h = 3 + energy * envelope[i] * 17;
+        const alpha = 0.5 + energy * 0.45;
         return (
           <div
             key={i}
-            className="rounded-full transition-all duration-100"
+            className="rounded-full"
             style={{
-              width: 1.5,
-              height,
-              backgroundColor: `rgba(var(--color-accent-rgb), ${alpha})`,
+              width: 2.5,
+              height: h,
+              backgroundColor: `rgba(var(--color-accent-rgb),${alpha})`,
+              transition: "height 90ms ease",
               boxShadow:
-                energy > 0.6
-                  ? `0 0 ${3 + energy * 6}px rgba(var(--color-accent-rgb), ${energy * 0.4})`
+                energy > 0.5
+                  ? `0 0 ${3 + energy * 10}px rgba(var(--color-accent-rgb),${energy * 0.3})`
                   : "none",
             }}
           />
@@ -91,13 +90,13 @@ function StreamingText({
   return (
     <div
       ref={containerRef}
-      className="overflow-y-auto"
+      className="overflow-y-hidden"
       style={{
         color: "rgba(255,255,255,0.92)",
-        fontSize: 13,
-        fontWeight: 400,
-        lineHeight: "20px",
-        maxHeight: 120,
+        fontSize: 12,
+        fontWeight: 450,
+        lineHeight: "18px",
+        maxHeight: 72,
         overflowWrap: "break-word",
       }}
     >
@@ -158,7 +157,7 @@ function ProcessedText({ text }: { text: string }) {
     <div
       className="whitespace-pre-wrap"
       style={{
-        color: "rgba(255,255,255,0.92)",
+        color: "rgba(var(--color-text-rgb),0.92)",
         fontSize: 13,
         fontWeight: 400,
         lineHeight: "20px",
@@ -247,23 +246,40 @@ export default function FnOverlay() {
         disabled={isRecording || isThinking}
       >
         <div
-          className={`w-14 h-14 rounded-2xl flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+          className="w-14 h-14 rounded-2xl flex items-center justify-center text-sm font-semibold transition-all duration-300"
+          style={
             state === "idle"
-              ? "bg-[#1c1916] border-2 border-[rgba(200,170,140,0.15)] text-[#f0ece8]/70 hover:border-[var(--color-accent)]/40 hover:text-[var(--color-accent)] hover:shadow-[0_0_20px_rgba(var(--color-accent-rgb),0.15)] cursor-pointer"
+              ? {
+                  background: "var(--color-surface)",
+                  border: "2px solid var(--color-glass-border)",
+                  color: "rgba(var(--color-text-rgb),0.7)",
+                  cursor: "pointer",
+                }
               : isDone
-                ? "bg-[#1c1916] border-2 border-[rgba(200,170,140,0.15)] text-[#f0ece8]/70 hover:border-[var(--color-accent)]/40 cursor-pointer"
-                : "bg-[var(--color-accent)]/20 border-2 border-[var(--color-accent)]/40 text-[var(--color-accent)] shadow-[0_0_24px_rgba(var(--color-accent-rgb),0.25)] cursor-default"
-          }`}
+                ? {
+                    background: "var(--color-surface)",
+                    border: "2px solid var(--color-glass-border)",
+                    color: "rgba(var(--color-text-rgb),0.7)",
+                    cursor: "pointer",
+                  }
+                : {
+                    background: "rgba(239,111,47,0.2)",
+                    border: "2px solid rgba(239,111,47,0.4)",
+                    color: "#ef6f2f",
+                    boxShadow: "0 0 24px rgba(239,111,47,0.25)",
+                    cursor: "default",
+                  }
+          }
         >
           fn
         </div>
         {state === "idle" && (
-          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] text-[#8a8480]/60 whitespace-nowrap">
+          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] text-muted/60 whitespace-nowrap">
             Click to try
           </span>
         )}
         {isDone && (
-          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] text-[#8a8480]/60 whitespace-nowrap">
+          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] text-muted/60 whitespace-nowrap">
             Click to reset
           </span>
         )}
@@ -309,7 +325,7 @@ export default function FnOverlay() {
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <WaveformSticks />
+                  <MiniWaveform />
                 </motion.div>
               )}
               {isThinking && (
@@ -337,13 +353,14 @@ export default function FnOverlay() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.96, transition: { duration: 0.15 } }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full max-w-sm rounded-xl px-4 py-3 -mt-2"
+            className="overflow-hidden -mt-2"
             style={{
-              background: "rgba(20, 16, 12, 0.85)",
-              border: "1px solid rgba(200, 170, 140, 0.12)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
+              width: 280,
+              padding: "8px 12px",
+              borderRadius: 12,
+              background: "radial-gradient(ellipse at 50% 0%, rgb(16,11,8) 0%, rgb(8,6,4) 100%)",
+              border: "1px solid rgba(239,111,47,0.07)",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.5), 0 0 0.5px rgba(0,0,0,0.5), inset 0 1px 0 rgba(239,111,47,0.04)",
             }}
           >
             <StreamingText text={DEMO_RAW} durationMs={7500} />
@@ -365,19 +382,19 @@ export default function FnOverlay() {
             <div
               className="rounded-xl px-4 py-3"
               style={{
-                background: "rgba(20, 16, 12, 0.6)",
-                border: "1px solid rgba(200, 170, 140, 0.08)",
+                background: "var(--color-glass-bg)",
+                border: "1px solid var(--color-glass-border)",
               }}
             >
               <p
                 className="text-[10px] font-medium uppercase tracking-wider mb-2"
-                style={{ color: "rgba(154, 147, 144, 0.6)" }}
+                style={{ color: "rgba(var(--color-muted-rgb),0.6)" }}
               >
                 Raw transcript
               </p>
               <p
                 style={{
-                  color: "rgba(255,255,255,0.5)",
+                  color: "rgba(var(--color-text-rgb),0.5)",
                   fontSize: 13,
                   lineHeight: "20px",
                 }}
@@ -389,9 +406,9 @@ export default function FnOverlay() {
             <div
               className="rounded-xl px-4 py-3"
               style={{
-                background: "rgba(20, 16, 12, 0.85)",
-                border: "1px solid rgba(212, 98, 42, 0.15)",
-                boxShadow: "0 0 20px rgba(212, 98, 42, 0.05)",
+                background: "var(--color-surface)",
+                border: "1px solid rgba(var(--color-accent-rgb),0.15)",
+                boxShadow: "0 0 20px rgba(var(--color-accent-rgb),0.05)",
               }}
             >
               <p

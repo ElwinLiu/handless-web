@@ -5,6 +5,7 @@ import { motion, MotionConfig } from "motion/react";
 import SimulatedApp from "./components/SimulatedApp";
 import FnOverlay from "./components/FnOverlay";
 import WorkflowDiagram from "./components/WorkflowDiagram";
+import { ThemeToggle } from "./components/ThemeToggle";
 
 const REPO = "ElwinLiu/handless";
 const RELEASES_URL = `https://github.com/${REPO}/releases/latest`;
@@ -112,20 +113,20 @@ export default function Home() {
       <main>
         {/* Nav */}
         <nav className="fixed top-0 z-50 w-full border-b border-border bg-bg">
-          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
+          <div className="flex h-14 items-center justify-between px-6">
             <a
               href="/"
-              className="flex items-center gap-2"
+              className="flex items-center gap-2.5"
               aria-label="Handless home"
             >
-              <img
-                src="/logo.svg"
-                alt=""
-                width={24}
-                height={24}
-                className="rounded-sm"
-              />
-              <span className="text-sm font-medium tracking-tight">
+              <svg width={28} height={20} viewBox="0 -32 90 64" fill="currentColor" className="text-accent">
+                <rect x="0"  y="-5"  width="10" height="10" rx="5" opacity="0.5"/>
+                <rect x="20" y="-18" width="10" height="36" rx="4" opacity="0.75"/>
+                <rect x="40" y="-32" width="10" height="64" rx="4" opacity="1"/>
+                <rect x="60" y="-18" width="10" height="36" rx="4" opacity="0.75"/>
+                <rect x="80" y="-5"  width="10" height="10" rx="5" opacity="0.5"/>
+              </svg>
+              <span className="text-lg font-semibold tracking-tight">
                 Handless
               </span>
             </a>
@@ -144,6 +145,13 @@ export default function Home() {
                 Preview
               </a>
               <a
+                href="/docs"
+                className="text-sm text-muted transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded"
+              >
+                Docs
+              </a>
+              <ThemeToggle />
+              <a
                 href={RELEASES_URL}
                 onClick={handleDownload}
                 className="inline-flex h-8 items-center rounded-md bg-accent px-3.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
@@ -152,12 +160,14 @@ export default function Home() {
               </a>
             </div>
 
-            <button
-              type="button"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              onClick={() => setMenuOpen((prev) => !prev)}
-              className="flex h-9 w-9 items-center justify-center rounded-md text-text hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:hidden"
-            >
+            <div className="flex items-center gap-2 sm:hidden">
+              <ThemeToggle />
+              <button
+                type="button"
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                onClick={() => setMenuOpen((prev) => !prev)}
+                className="flex h-9 w-9 items-center justify-center rounded-md text-text hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
               {menuOpen ? (
                 <svg
                   width="20"
@@ -190,7 +200,8 @@ export default function Home() {
                   <line x1="4" y1="18" x2="20" y2="18" />
                 </svg>
               )}
-            </button>
+              </button>
+            </div>
           </div>
 
           {menuOpen && (
@@ -209,6 +220,13 @@ export default function Home() {
                   className="text-sm text-muted py-2 transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
                 >
                   Preview
+                </a>
+                <a
+                  href="/docs"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-sm text-muted py-2 transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+                >
+                  Docs
                 </a>
                 <a
                   href={RELEASES_URL}
@@ -523,14 +541,13 @@ export default function Home() {
         <footer className="border-t border-border px-6 py-8">
           <div className="mx-auto flex max-w-6xl items-center justify-between">
             <div className="flex items-center gap-2">
-              <img
-                src="/logo.svg"
-                alt=""
-                width={18}
-                height={18}
-                className="rounded-sm"
-                loading="lazy"
-              />
+              <svg width={20} height={14} viewBox="0 -32 90 64" fill="currentColor" className="text-accent">
+                <rect x="0"  y="-5"  width="10" height="10" rx="5" opacity="0.5"/>
+                <rect x="20" y="-18" width="10" height="36" rx="4" opacity="0.75"/>
+                <rect x="40" y="-32" width="10" height="64" rx="4" opacity="1"/>
+                <rect x="60" y="-18" width="10" height="36" rx="4" opacity="0.75"/>
+                <rect x="80" y="-5"  width="10" height="10" rx="5" opacity="0.5"/>
+              </svg>
               <span className="text-xs text-muted">Handless</span>
             </div>
             <div className="flex items-center gap-5">

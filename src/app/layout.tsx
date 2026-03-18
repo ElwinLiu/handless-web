@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Instrument_Serif } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
+import { ThemeProvider } from "./components/ThemeProvider";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -50,7 +51,9 @@ export default function RootLayout({
       <head>
         <meta name="theme-color" content="#080604" />
       </head>
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-screen antialiased">
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   );
 }
