@@ -114,19 +114,138 @@ body {
   88% { transform: translate(0.2px, -1.5px); opacity: 0.9; box-shadow: 0 0 5px rgba(var(--color-accent-rgb), 0.7); }
 }
 
-/* Waveform stick animation for recording state */
-@keyframes waveform-stick {
-  0%, 100% { transform: scaleY(0.3); }
-  50% { transform: scaleY(1); }
+/* ── Simulated app: scope the real Handless app typography ── */
+.sim-app-typo {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Real app shadow tokens for glass cards */
+  --shadow-glass: 0 1px 4px rgba(0, 0, 0, 0.16), 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
-/* App simulator glass panel */
-.glass-panel {
-  background: var(--color-glass-bg);
-  border: 1px solid var(--color-glass-border);
+/* ── Simulated app carousel ── */
+.sim-item {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sim-item.visible {
+  opacity: 1;
+  transform: none;
 }
 
-.glass-panel-solid {
-  background: #1c1916;
-  border: 1px solid var(--color-glass-border);
+.sim-expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 500ms cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sim-expand > * {
+  overflow: hidden;
+}
+.sim-expand.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.sim-caret {
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sim-caret.open {
+  transform: rotate(180deg);
+}
+
+@keyframes dock-fill {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes sim-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes sim-bubble-enter {
+  from { opacity: 0; transform: scale(0.96) translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* fn badge pop-in */
+@keyframes sim-fn-pop {
+  0%   { opacity: 0; transform: scale(0.4); }
+  50%  { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* fn badge press flash */
+@keyframes sim-fn-press {
+  0%   { transform: scale(1); box-shadow: 0 0 0 0 rgba(239,111,47,0); }
+  20%  { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239,111,47,0.4); }
+  50%  { transform: scale(1.05); box-shadow: 0 0 12px 4px rgba(239,111,47,0.25); }
+  100% { transform: scale(1); box-shadow: 0 0 8px 2px rgba(239,111,47,0.12); }
+}
+
+/* Left-to-right text sweep: dim → bright */
+@keyframes sim-sweep {
+  from { background-position: 100% 0; }
+  to   { background-position: 0% 0; }
+}
+
+.sim-sweep-text {
+  background: linear-gradient(90deg, #f5f0eb 45%, rgba(245,240,235,0.3) 55%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: sim-sweep 900ms ease forwards;
+}
+
+/* Typing cursor blink */
+.sim-cursor {
+  display: inline-block;
+  width: 1px;
+  height: 0.85em;
+  background: currentColor;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  animation: sim-cursor-blink 530ms step-end infinite;
+}
+@keyframes sim-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Simulated cursor click ripple */
+.sim-cursor-click {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transform: translate(-50%, -50%) scale(0);
+  animation: sim-click-ripple 400ms ease-out forwards;
+}
+@keyframes sim-click-ripple {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sim-item {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .sim-expand { transition: none; }
+  .sim-caret { transition: none; }
 }

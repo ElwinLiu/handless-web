@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Instrument_Serif } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -43,7 +44,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${instrumentSerif.variable}`}
+      className={`${dmSans.variable} ${instrumentSerif.variable} ${GeistSans.variable}`}
+      suppressHydrationWarning
     >
       <head>
         <meta name="theme-color" content="#080604" />

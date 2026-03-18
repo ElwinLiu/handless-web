@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, MotionConfig } from "motion/react";
 import SimulatedApp from "./components/SimulatedApp";
 import FnOverlay from "./components/FnOverlay";
+import WorkflowDiagram from "./components/WorkflowDiagram";
 
 const FEATURES = [
   {
@@ -16,15 +17,10 @@ const FEATURES = [
     description:
       "One keyboard shortcut to start. Hold, toggle, or always-on — speak naturally, get text instantly in any app.",
   },
-  {
-    title: "5 Local Engines",
-    description:
-      "Whisper, Parakeet, Moonshine, SenseVoice, Breeze ASR — pick the engine that fits your language and speed needs.",
-  },
-  {
+{
     title: "LLM Polish",
     description:
-      "Clean up transcriptions with OpenAI, Claude, Gemini, Groq, Ollama, or Apple Intelligence. Mild, medium, or aggressive — your call.",
+      "Clean up transcriptions with OpenAI, Anthropic, Gemini, Groq, OpenRouter, Cerebras, Z.AI, Apple Intelligence, or your own endpoint. Mild, medium, or aggressive — your call.",
   },
   {
     title: "Dictionary & History",
@@ -234,7 +230,7 @@ export default function Home() {
             >
               Speech to text,
               <br />
-              <em className="text-accent">your way</em>
+              <em className="text-accent">BYOK</em>
             </motion.h1>
 
             <motion.p
@@ -243,7 +239,7 @@ export default function Home() {
               transition={{ duration: 0.7, ease }}
             >
               Press a shortcut, speak naturally, get text in any app. Go fully
-              local for privacy or bring your own API keys for cloud
+              local for privacy or bring your own API keys (BYOK) for cloud
               accuracy.
             </motion.p>
 
@@ -335,6 +331,28 @@ export default function Home() {
           </motion.div>
         </section>
 
+        {/* How it works */}
+        <section className="scroll-mt-16 px-6 py-20">
+          <motion.div
+            className="mx-auto max-w-6xl"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={fadeIn}
+            transition={{ duration: 0.6, ease }}
+          >
+            <h2 className="font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] tracking-tight">
+              How it works
+            </h2>
+            <p className="mt-3 text-sm text-muted">
+              Pick your engine, choose a post-processing model, set your polish level — done.
+            </p>
+            <div className="mt-12">
+              <WorkflowDiagram />
+            </div>
+          </motion.div>
+        </section>
+
         {/* See it in action */}
         <section id="preview" className="scroll-mt-16 px-6 py-20">
           <motion.div
@@ -350,22 +368,23 @@ export default function Home() {
                 See it in action
               </h2>
               <p className="mt-3 text-sm text-muted max-w-md mx-auto">
-                Explore the app&apos;s interface. Click the Fn key to see real-time captioning.
+                Watch the app in action. Try the Fn key below to see real-time captioning.
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-[1fr_auto] gap-12 lg:gap-16 items-start">
-              {/* Simulated app window */}
+            <div className="flex flex-col gap-16 items-center">
+              {/* Interactive app preview — full width */}
               <motion.div
+                className="w-full"
                 variants={fadeUp}
                 transition={{ duration: 0.7, ease }}
               >
                 <SimulatedApp />
               </motion.div>
 
-              {/* Fn Key overlay demo */}
+              {/* Fn Key overlay demo — below */}
               <motion.div
-                className="flex flex-col items-center lg:sticky lg:top-32 lg:self-start pt-4"
+                className="flex flex-col items-center"
                 variants={fadeUp}
                 transition={{ duration: 0.7, ease, delay: 0.1 }}
               >
