@@ -61,6 +61,29 @@ const FEATURES = [
   },
 ];
 
+const FAQ = [
+  {
+    q: "Is it really free?",
+    a: "Yes. Handless is free and open source. No subscriptions, no usage limits, no catch.",
+  },
+  {
+    q: "Does it work offline?",
+    a: "Yes. Local engines like Whisper, Moonshine, and Parakeet run entirely on your Mac — no internet required.",
+  },
+  {
+    q: 'What does "bring your own API keys" mean?',
+    a: "Instead of routing audio through a middleman, you plug in your own API keys from providers like OpenAI, Deepgram, or Groq. Your data goes directly to the provider you choose.",
+  },
+  {
+    q: "What languages are supported?",
+    a: "It depends on the engine. Whisper supports 99+ languages. Cloud providers like Deepgram and AssemblyAI support dozens. Local engines vary.",
+  },
+  {
+    q: "How is audio processed?",
+    a: "Audio is captured locally on your Mac, sent to the engine you choose (local or cloud), and the text is inserted into whatever app is focused. Nothing is stored or logged.",
+  },
+];
+
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const fadeUp = {
@@ -75,6 +98,7 @@ const fadeIn = {
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
     <MotionConfig reducedMotion="user">
@@ -213,7 +237,7 @@ export default function Home() {
             >
               Speech to text,
               <br />
-              <em className="text-accent">BYOK</em>
+              <em className="text-accent">your way</em>
             </motion.h1>
 
             <motion.p
@@ -383,6 +407,114 @@ export default function Home() {
                 </div>
                 <FnOverlay />
               </motion.div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* FAQ */}
+        <section className="scroll-mt-16 px-6 py-20">
+          <motion.div
+            className="mx-auto max-w-6xl grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={fadeIn}
+            transition={{ duration: 0.6, ease }}
+          >
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <h2 className="font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] tracking-tight">
+                Common questions
+              </h2>
+            </div>
+
+            <div className="divide-y divide-border">
+              {FAQ.map((item, i) => (
+                <div key={i} className="py-5 first:pt-0 last:pb-0">
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    className="w-full text-left flex items-start justify-between gap-4"
+                  >
+                    <h3 className="text-sm font-semibold">{item.q}</h3>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className={`text-muted shrink-0 mt-0.5 transition-transform duration-200 ${openFaq === i ? "rotate-180" : ""}`}
+                      aria-hidden="true"
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </button>
+                  {openFaq === i && (
+                    <p className="mt-3 text-sm text-muted leading-relaxed">
+                      {item.a}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Final CTA */}
+        <section className="px-6 py-20">
+          <motion.div
+            className="mx-auto max-w-2xl text-center"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={fadeUp}
+            transition={{ duration: 0.7, ease }}
+          >
+            <h2 className="font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] tracking-tight">
+              Ready to go hands-free?
+            </h2>
+            <p className="mt-3 text-sm text-muted">
+              Free, open source, and built for privacy.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href={RELEASES_URL}
+                onClick={handleDownload}
+                className="inline-flex h-11 items-center gap-2 rounded-lg bg-accent px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" x2="12" y1="15" y2="3" />
+                </svg>
+                Download for Mac
+              </a>
+              <a
+                href="https://github.com/ElwinLiu/handless"
+                className="inline-flex h-11 items-center gap-2 rounded-lg border border-border-strong px-5 text-sm font-medium text-text transition-colors duration-150 hover:border-muted focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+                View on GitHub
+              </a>
             </div>
           </motion.div>
         </section>
