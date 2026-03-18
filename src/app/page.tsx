@@ -318,22 +318,23 @@ export default function Home() {
         {/* How it works */}
         <section className="scroll-mt-16 px-6 py-20">
           <motion.div
-            className="mx-auto max-w-6xl"
+            className="mx-auto max-w-6xl grid lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
             variants={fadeIn}
             transition={{ duration: 0.6, ease }}
           >
-            <h2 className="font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] tracking-tight">
-              How it works
-            </h2>
-            <p className="mt-3 text-sm text-muted">
-              Pick your engine, choose a post-processing model, set your polish level — done.
-            </p>
-            <div className="mt-12">
-              <WorkflowDiagram />
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <h2 className="font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] tracking-tight">
+                How it works
+              </h2>
+              <p className="mt-3 text-sm text-muted">
+                Pick your engine, choose a post-processing model, set your polish level — done.
+              </p>
             </div>
+
+            <WorkflowDiagram />
           </motion.div>
         </section>
 

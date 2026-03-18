@@ -217,8 +217,8 @@ export default function WorkflowDiagram() {
 
           {/* STT Engines */}
           <div className="flex-1 min-w-0 max-w-[180px]">
-            <p className="text-[10px] text-muted/60 uppercase tracking-widest mb-2 pl-1">
-              Transcription
+            <p className="text-xs font-semibold text-text mb-2 pl-1">
+              STT Providers
             </p>
             <div className="space-y-1">
               <p className="text-[9px] text-muted/30 uppercase tracking-widest pl-1 pb-0.5">
@@ -252,8 +252,8 @@ export default function WorkflowDiagram() {
 
           {/* LLM Providers */}
           <div className="flex-1 min-w-0 max-w-[180px]">
-            <p className="text-[10px] text-muted/60 uppercase tracking-widest mb-2 pl-1">
-              Post-process
+            <p className="text-xs font-semibold text-text mb-2 pl-1">
+              LLM Providers
             </p>
             <div className="space-y-1">
               {LLMS.map((l) => (
@@ -271,8 +271,8 @@ export default function WorkflowDiagram() {
 
           {/* Polish Prompts */}
           <div className="flex-1 min-w-0 max-w-[200px]">
-            <p className="text-[10px] text-muted/60 uppercase tracking-widest mb-2 pl-1">
-              Polish mode
+            <p className="text-xs font-semibold text-text mb-2 pl-1">
+              Polish Prompt
             </p>
             <div className="space-y-1">
               {PROMPTS.map((p) => (
@@ -339,8 +339,8 @@ export default function WorkflowDiagram() {
 
         {/* Engines */}
         <div>
-          <p className="text-[10px] text-muted/60 uppercase tracking-widest mb-2 pl-1">
-            Transcription
+          <p className="text-xs font-semibold text-text mb-2 pl-1">
+            STT Providers
           </p>
           <div className="flex flex-wrap gap-1.5">
             {ENGINES.map((e) => (
@@ -363,8 +363,8 @@ export default function WorkflowDiagram() {
 
         {/* LLMs */}
         <div>
-          <p className="text-[10px] text-muted/60 uppercase tracking-widest mb-2 pl-1">
-            Post-process
+          <p className="text-xs font-semibold text-text mb-2 pl-1">
+            LLM Providers
           </p>
           <div className="flex flex-wrap gap-1.5">
             {LLMS.map((l) => (
@@ -387,8 +387,8 @@ export default function WorkflowDiagram() {
 
         {/* Prompts */}
         <div>
-          <p className="text-[10px] text-muted/60 uppercase tracking-widest mb-2 pl-1">
-            Polish mode
+          <p className="text-xs font-semibold text-text mb-2 pl-1">
+            Polish Prompt
           </p>
           <div className="space-y-1.5">
             {PROMPTS.map((p) => (
