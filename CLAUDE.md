@@ -49,3 +49,5 @@ Tailwind CSS 4 with `@theme` in `globals.css`. Two color systems coexist:
 - **SimulatedApp palette** — hardcoded `C` object in `SimulatedApp.tsx` matching the actual desktop app's colors
 
 Fonts: DM Sans (body) + Instrument Serif (headings) loaded via `next/font/google`, plus Geist (SimulatedApp only) loaded via `geist` package — all in `layout.tsx`.
+
+Handless project repo: ~/code/handless

@@ -34,39 +34,6 @@ const FEATURES = [
   },
 ];
 
-const ENGINES = [
-  {
-    name: "Whisper",
-    variants: "Small, Medium, Turbo, Large",
-    languages: "99+ languages",
-    note: "Most popular",
-  },
-  {
-    name: "Parakeet",
-    variants: "V2, V3",
-    languages: "English & 25 European",
-    note: "NVIDIA",
-  },
-  {
-    name: "Moonshine",
-    variants: "Base, V2 Tiny, V2 Small, V2 Medium",
-    languages: "English",
-    note: "Ultra-fast",
-  },
-  {
-    name: "SenseVoice",
-    variants: "Int8",
-    languages: "CJK, Cantonese, English",
-    note: "Multilingual",
-  },
-  {
-    name: "Breeze ASR",
-    variants: "Standard",
-    languages: "Taiwanese Mandarin",
-    note: "Specialized",
-  },
-];
-
 const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const fadeUp = {
@@ -124,12 +91,6 @@ export default function Home() {
                 className="text-sm text-muted transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded"
               >
                 Preview
-              </a>
-              <a
-                href="#engines"
-                className="text-sm text-muted transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded"
-              >
-                Engines
               </a>
               <a
                 href="https://github.com/ElwinLiu/handless/releases"
@@ -196,13 +157,6 @@ export default function Home() {
                   className="text-sm text-muted py-2 transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
                 >
                   Preview
-                </a>
-                <a
-                  href="#engines"
-                  onClick={() => setMenuOpen(false)}
-                  className="text-sm text-muted py-2 transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
-                >
-                  Engines
                 </a>
                 <a
                   href="https://github.com/ElwinLiu/handless/releases"
@@ -398,99 +352,6 @@ export default function Home() {
                 </div>
                 <FnOverlay />
               </motion.div>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Engines */}
-        <section id="engines" className="scroll-mt-16 px-6 py-20">
-          <motion.div
-            className="mx-auto max-w-6xl"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            variants={fadeIn}
-            transition={{ duration: 0.6, ease }}
-          >
-            <h2 className="font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] tracking-tight">
-              Choose your engine
-            </h2>
-            <p className="mt-3 text-sm text-muted">
-              5 local engines. Pick what works for your language and speed.
-            </p>
-
-            <div className="mt-12 overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr className="border-b border-border-strong">
-                    <th className="pb-3 pr-8 text-xs font-medium uppercase tracking-wider text-muted">
-                      Engine
-                    </th>
-                    <th className="pb-3 pr-8 text-xs font-medium uppercase tracking-wider text-muted">
-                      Variants
-                    </th>
-                    <th className="pb-3 pr-8 text-xs font-medium uppercase tracking-wider text-muted">
-                      Languages
-                    </th>
-                    <th className="pb-3 text-xs font-medium uppercase tracking-wider text-muted text-right">
-                      Note
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {ENGINES.map((engine) => (
-                    <tr key={engine.name}>
-                      <td className="py-3.5 pr-8 font-medium whitespace-nowrap">
-                        {engine.name}
-                      </td>
-                      <td className="py-3.5 pr-8 text-muted">
-                        {engine.variants}
-                      </td>
-                      <td className="py-3.5 pr-8 text-muted">
-                        {engine.languages}
-                      </td>
-                      <td className="py-3.5 text-right whitespace-nowrap">
-                        <span className="text-xs font-medium text-accent">
-                          {engine.note}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <p className="mt-8 text-sm text-muted">
-
-              Prefer cloud? Bring your own OpenAI or Soniox API key for
-              cloud-powered transcription with real-time streaming.
-            </p>
-          </motion.div>
-        </section>
-
-        {/* CTA */}
-        <section className="px-6 py-24">
-          <motion.div
-            className="mx-auto max-w-6xl"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            variants={fadeIn}
-            transition={{ duration: 0.6, ease }}
-          >
-            <h2 className="font-serif text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1] tracking-tight">
-              Start dictating today
-            </h2>
-            <p className="mt-3 text-sm text-muted">
-              No account needed. Download and start speaking.
-            </p>
-            <div className="mt-6">
-              <a
-                href="https://github.com/ElwinLiu/handless/releases"
-                className="inline-flex h-11 items-center gap-2 rounded-lg bg-accent px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-              >
-                Download for Mac
-              </a>
             </div>
           </motion.div>
         </section>

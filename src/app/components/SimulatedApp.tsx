@@ -1074,6 +1074,7 @@ export default function SimulatedApp() {
   const containerRef = useRef<HTMLDivElement>(null);
   const surfaceRef = useRef<HTMLDivElement>(null);
   const modelsScrollRef = useRef<HTMLDivElement>(null);
+  const polishScrollRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval>>(undefined);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const animFrameRef = useRef<number>(0);
@@ -1145,8 +1146,9 @@ export default function SimulatedApp() {
       setShowResult(false);
       setCursorPos(null);
       setCursorClicking(false);
-      // Reset scroll position
+      // Reset scroll positions
       if (modelsScrollRef.current) modelsScrollRef.current.scrollTop = 0;
+      if (polishScrollRef.current) polishScrollRef.current.scrollTop = 0;
 
       // Stagger in after a frame
       timersRef.current.push(
@@ -1217,11 +1219,11 @@ export default function SimulatedApp() {
         timersRef.current.push(
           setTimeout(() => setModelActivated(true), 13800),
         );
-        // 14.5s hide cursor, scroll
+        // 14.2s hide cursor, scroll
         timersRef.current.push(
-          setTimeout(() => setCursorPos(null), 14500),
+          setTimeout(() => setCursorPos(null), 14200),
         );
-        // 15.0s → smooth scroll to bottom (~3s)
+        // 14.5s → smooth scroll to bottom (~2s)
         timersRef.current.push(
           setTimeout(() => {
             const el = modelsScrollRef.current;
@@ -1229,7 +1231,7 @@ export default function SimulatedApp() {
             const start = el.scrollTop;
             const target = el.scrollHeight - el.clientHeight;
             if (target <= 0) return;
-            const duration = 3000;
+            const duration = 2000;
             const t0 = performance.now();
             const animate = (now: number) => {
               const elapsed = now - t0;
@@ -1239,11 +1241,11 @@ export default function SimulatedApp() {
               if (p < 1) animFrameRef.current = requestAnimationFrame(animate);
             };
             animFrameRef.current = requestAnimationFrame(animate);
-          }, 15000),
+          }, 14500),
         );
-        // Advance to Polish panel after scroll + 2s dwell
+        // Advance to Polish panel after scroll + 1s dwell
         timersRef.current.push(
-          setTimeout(() => goToPanel(1), 20000),
+          setTimeout(() => goToPanel(1), 17500),
         );
       }
       if (panel === 1) {
@@ -1281,6 +1283,24 @@ export default function SimulatedApp() {
             setDemoPhase("done");
             setShowResult(true);
           }, 18300),
+          // Smooth scroll to reveal the result box
+          setTimeout(() => {
+            const el = polishScrollRef.current;
+            if (!el) return;
+            const start = el.scrollTop;
+            const target = el.scrollHeight - el.clientHeight;
+            if (target <= 0) return;
+            const duration = 1500;
+            const t0 = performance.now();
+            const animate = (now: number) => {
+              const elapsed = now - t0;
+              const p = Math.min(elapsed / duration, 1);
+              const eased = 1 - Math.pow(1 - p, 3);
+              el.scrollTop = start + (target - start) * eased;
+              if (p < 1) animFrameRef.current = requestAnimationFrame(animate);
+            };
+            animFrameRef.current = requestAnimationFrame(animate);
+          }, 18500),
         );
       }
     },
@@ -1368,7 +1388,7 @@ export default function SimulatedApp() {
                     modelActivated={modelActivated}
                   />
                 </div>
-                <div className="flex-1 min-w-0 overflow-y-hidden">
+                <div ref={polishScrollRef} className="flex-1 min-w-0 overflow-y-hidden">
                   <PolishPanel
                     show={staggerReady && activePanel === 1}
                     highlightedPrompt={highlightedPrompt}
