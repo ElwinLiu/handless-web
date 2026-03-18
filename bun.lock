@@ -5,7 +5,7 @@
     "": {
       "name": "handless-web",
       "dependencies": {
-        "geist": "^1.4.0",
+        "geist": "^1.7.0",
         "motion": "^12.0.0",
         "next": "^15.3.0",
         "react": "^19.0.0",

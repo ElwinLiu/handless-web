@@ -6,6 +6,33 @@ import SimulatedApp from "./components/SimulatedApp";
 import FnOverlay from "./components/FnOverlay";
 import WorkflowDiagram from "./components/WorkflowDiagram";
 
+const REPO = "ElwinLiu/handless";
+const RELEASES_URL = `https://github.com/${REPO}/releases/latest`;
+
+async function handleDownload(e: React.MouseEvent) {
+  e.preventDefault();
+  const isIntel =
+    !navigator.userAgent.includes("ARM64") &&
+    navigator.platform === "MacIntel" &&
+    !("userAgentData" in navigator);
+  const arch = isIntel ? "x64" : "aarch64";
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${REPO}/releases/latest`,
+      { headers: { Accept: "application/vnd.github+json" } }
+    );
+    if (!res.ok) throw new Error();
+    const release = await res.json();
+    const asset = release.assets?.find(
+      (a: { name: string }) => a.name.endsWith(".dmg") && a.name.includes(arch)
+    );
+    window.location.href = asset?.browser_download_url ?? RELEASES_URL;
+  } catch {
+    window.location.href = RELEASES_URL;
+  }
+}
+
 const FEATURES = [
   {
     title: "Local or Cloud — You Choose",
@@ -93,7 +120,8 @@ export default function Home() {
                 Preview
               </a>
               <a
-                href="https://github.com/ElwinLiu/handless/releases"
+                href={RELEASES_URL}
+                onClick={handleDownload}
                 className="inline-flex h-8 items-center rounded-md bg-accent px-3.5 text-sm font-medium text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
                 Download
@@ -159,7 +187,8 @@ export default function Home() {
                   Preview
                 </a>
                 <a
-                  href="https://github.com/ElwinLiu/handless/releases"
+                  href={RELEASES_URL}
+                  onClick={handleDownload}
                   className="inline-flex h-10 items-center justify-center rounded-md bg-accent text-sm font-medium text-white mt-2 transition-colors duration-150 hover:bg-accent-hover"
                 >
                   Download
@@ -203,7 +232,8 @@ export default function Home() {
               transition={{ duration: 0.7, ease }}
             >
               <a
-                href="https://github.com/ElwinLiu/handless/releases"
+                href={RELEASES_URL}
+                onClick={handleDownload}
                 className="inline-flex h-11 items-center gap-2 rounded-lg bg-accent px-5 text-sm font-medium text-white transition-colors duration-150 hover:bg-accent-hover focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
               >
                 <svg
