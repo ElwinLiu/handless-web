@@ -68,7 +68,7 @@ export default function Home() {
               aria-label="Handless home"
             >
               <img
-                src="/logo.png"
+                src="/logo.svg"
                 alt=""
                 width={24}
                 height={24}
@@ -361,7 +361,7 @@ export default function Home() {
           <div className="mx-auto flex max-w-6xl items-center justify-between">
             <div className="flex items-center gap-2">
               <img
-                src="/logo.png"
+                src="/logo.svg"
                 alt=""
                 width={18}
                 height={18}
