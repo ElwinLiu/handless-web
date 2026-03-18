@@ -1429,12 +1429,6 @@ export default function SimulatedApp() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
-              <div
-                className="flex items-center gap-1"
-                style={{ color: `${C.muted}99` }}
-              >
-                <span>v0.1.13</span>
-              </div>
             </div>
           </div>
         </div>
