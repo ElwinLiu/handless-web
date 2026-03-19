@@ -55,3 +55,14 @@ Tailwind CSS 4 with `@theme` in `globals.css`. Two color systems coexist:
 Fonts: DM Sans (body) + Instrument Serif (headings) loaded via `next/font/google`, plus Geist (SimulatedApp only) loaded via `geist` package — all in `layout.tsx`.
 
 Handless project repo: ~/code/handless
+
+### Documentation (Mintlify)
+
+Docs live in `docs/` at the project root, deployed via Mintlify to `docs.handless.elwin.cc`. Mintlify reads from the `handless-web` repo's `docs/` folder (monorepo mode).
+
+- Config: `docs/docs.json` (NOT `mint.json` — Mintlify migrated to `docs.json`)
+- Content: MDX files in `docs/`
+- `docs.json` navigation must be an **object** with `groups` array, not a top-level array
+- `theme` field is required (e.g. `"maple"`)
+- Logo SVGs are separate files in `docs/` (Mintlify deploys independently from Next.js)
+- Local preview: `cd docs && fnm use 22 && npx mintlify dev` (requires Node LTS, not Node 25+)
