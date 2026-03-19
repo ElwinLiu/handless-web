@@ -23,18 +23,20 @@
     "name": "GitHub",
     "url": "https://github.com/ElwinLiu/handless"
   },
-  "navigation": [
-    {
-      "group": "Getting Started",
-      "pages": ["quickstart"]
-    },
-    {
-      "group": "Features",
-      "pages": ["providers", "polish", "shortcuts", "dictionary", "history"]
-    },
-    {
-      "group": "Reference",
-      "pages": ["configuration", "cli", "faq"]
-    }
-  ]
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "pages": ["quickstart"]
+      },
+      {
+        "group": "Features",
+        "pages": ["providers", "polish", "shortcuts", "dictionary", "history"]
+      },
+      {
+        "group": "Reference",
+        "pages": ["configuration", "cli", "faq"]
+      }
+    ]
+  }
 }
