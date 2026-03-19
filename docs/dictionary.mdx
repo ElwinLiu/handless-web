@@ -1,0 +1,43 @@
+---
+title: "Dictionary"
+description: "Add custom terms and context to improve transcription accuracy."
+---
+
+The dictionary helps Handless transcribe specialized terms, names, and jargon correctly.
+
+## How It Works
+
+When you add terms, they're sent as hints to the transcription engine. This improves recognition of words that might otherwise be misheard — technical terms, brand names, acronyms, or uncommon proper nouns.
+
+## Adding Terms
+
+1. Open **Settings → Dictionary**
+2. Add terms separated by commas, spaces, or newlines
+3. Terms are automatically included in future transcriptions
+
+Examples: `Kubernetes`, `PostgreSQL`, `Vercel`, `NVIDIA`, `TailwindCSS`
+
+## Context Description
+
+Add a context description to give the engine more background about what you typically discuss:
+
+> I'm a software engineer discussing web development, React, TypeScript, and cloud infrastructure.
+
+This helps the engine make better guesses when words are ambiguous.
+
+## Provider Support
+
+Not all providers use dictionary data the same way:
+
+| Provider | Terms | Context | Method |
+| --- | --- | --- | --- |
+| **OpenAI** | Yes | Yes | Prompt injection |
+| **Groq** | Yes | Yes | Prompt injection |
+| **Fireworks AI** | Yes | Yes | Prompt injection |
+| **Soniox** | Yes | Yes | Context terms + description |
+| **Deepgram** | Yes | No | Keywords |
+| **AssemblyAI** | Yes | No | Keywords prompt |
+| **ElevenLabs** | Yes | No | Keywords |
+| **Mistral AI** | No | Yes | Context bias |
+| **Cartesia** | No | No | — |
+| **Local (Whisper)** | Yes | No | Prompt |

@@ -1,0 +1,40 @@
+---
+title: "Keyboard Shortcuts"
+description: "Default keyboard shortcuts, activation modes, and customization."
+---
+
+Handless is controlled via global keyboard shortcuts that work system-wide — no need to focus the app window.
+
+## Default Shortcuts
+
+| Action | macOS | Windows / Linux |
+| --- | --- | --- |
+| **Transcribe** | <kbd>Fn</kbd> | <kbd>Ctrl</kbd> + <kbd>Space</kbd> |
+| **Transcribe + Polish** | <kbd>Option</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd> | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd> |
+| **Cancel** | <kbd>Escape</kbd> | <kbd>Escape</kbd> |
+
+## Activation Modes
+
+Choose how the recording shortcut behaves:
+
+- **Hold or Toggle** (default) — press once to start, again to stop. Or hold to record, release to stop.
+- **Toggle** — press once to start, press again to stop.
+- **Hold** — hold the key to record, release to stop. Classic push-to-talk.
+
+## Customizing Shortcuts
+
+1. Open **Settings → Shortcuts**
+2. Click on a shortcut binding to edit it
+3. Press your desired key combination
+4. The new binding is saved immediately
+
+You can add multiple shortcuts, each linked to a specific post-processing prompt. See [Polish → Shortcut Binding](/polish#shortcut-binding).
+
+## Keyboard Implementation
+
+Handless offers two keyboard backends:
+
+- **HandyKeys** (default on macOS) — custom keyboard library, more robust, supports the <kbd>Fn</kbd> key.
+- **Tauri** (default on Windows/Linux) — cross-platform global shortcut plugin.
+
+Switch between them in **Settings → General → Keyboard Implementation** if you experience shortcut issues.

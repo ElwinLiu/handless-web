@@ -1,0 +1,63 @@
+---
+title: "FAQ"
+description: "Frequently asked questions about Handless."
+---
+
+## General
+
+### Is Handless free?
+
+Yes. Handless is free and open source. No subscriptions, no usage limits, no catch.
+
+### Does it work offline?
+
+Yes. Local engines like Whisper, Moonshine, and Parakeet run entirely on your Mac — no internet required. Cloud providers obviously need a connection.
+
+### What does "bring your own API keys" mean?
+
+Instead of routing audio through a middleman, you connect directly to providers like OpenAI, Deepgram, or Groq with your own API keys. Your data goes directly to the provider — Handless never sees it.
+
+### What languages are supported?
+
+Depends on the engine. Whisper supports 99+ languages. Cloud providers vary — check each provider's documentation for specifics. The Handless UI itself supports 17 languages.
+
+### How is audio processed?
+
+Audio is captured locally on your Mac and sent to your chosen engine (local or cloud). The resulting text is pasted into your focused app. With local engines, audio never leaves your machine.
+
+## Troubleshooting
+
+### The shortcut isn't working
+
+- Make sure Handless has **Accessibility** permission in System Settings
+- Try switching the keyboard implementation in **Settings → General** (HandyKeys ↔ Tauri)
+- Check if another app is using the same shortcut
+- Restart Handless
+
+### Transcription quality is poor
+
+- Try a larger local model (e.g. Whisper Large instead of Small)
+- Use a cloud provider for better accuracy
+- Add frequently misheard terms to your [Dictionary](/dictionary)
+- Make sure your microphone is positioned well
+- Set the correct language instead of relying on auto-detect
+
+### Text isn't pasting into my app
+
+- Verify **Accessibility** permission is granted
+- Try a different paste method in **Settings → Output**
+- Some apps block automated paste — use "Copy to clipboard" mode and paste manually
+
+### The app is using too much memory
+
+Large local models can use significant memory. Set a shorter **Model Unload Timeout** in Settings → General to free memory after inactivity.
+
+## Privacy
+
+### Is my audio stored anywhere?
+
+With local engines, audio is processed on your Mac and never leaves the device. With cloud providers, audio is sent encrypted to the provider's API. Handless itself does not store or log audio files.
+
+### What data does Handless collect?
+
+None. Handless has no analytics, no telemetry, and no phone-home behavior. Everything stays on your machine.

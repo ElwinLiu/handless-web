@@ -1,0 +1,70 @@
+---
+title: "Providers"
+description: "All supported speech-to-text engines — local and cloud — with setup instructions."
+---
+
+Handless supports local (on-device) and cloud-based speech-to-text engines. Local engines need no internet. Cloud providers offer higher accuracy and broader language support but require API keys.
+
+## Local Engines
+
+Download models in **Settings → Models → Library** and run them entirely on your Mac.
+
+| Engine | Languages | Speed | Notes |
+| --- | --- | --- | --- |
+| **Whisper** | 99+ | Moderate | OpenAI's model. Multiple sizes (small → large). Supports translation to English. |
+| **Parakeet** | English | Fast | NVIDIA NeMo. Optimized for English with high accuracy. |
+| **Moonshine** | English | Very fast | Ultra-lightweight. Great for quick dictation. |
+| **Moonshine Streaming** | English | Real-time | Streaming variant — shows text as you speak. |
+| **SenseVoice** | Multiple | Fast | Multilingual with built-in voice activity detection. |
+
+### Model Sizes
+
+Larger models are more accurate but slower and use more memory. Choose based on your needs:
+
+- **Small** (~40–150 MB) — fastest, good for quick notes
+- **Medium** (~500 MB–1.5 GB) — balanced accuracy and speed
+- **Large** (~1.5–3+ GB) — highest accuracy
+
+## Cloud Providers
+
+Connect your own API keys in **Settings → Models → My Models**.
+
+| Provider | Default Model | Streaming | Translation | Diarization |
+| --- | --- | --- | --- | --- |
+| **OpenAI** | gpt-4o-mini-transcribe | Yes | Yes | No |
+| **Groq** | whisper-large-v3-turbo | No | No | No |
+| **Deepgram** | nova-3 | Yes | No | Yes |
+| **AssemblyAI** | universal-3-pro | Yes | No | Yes |
+| **ElevenLabs** | scribe_v2 | Yes | No | Yes |
+| **Mistral AI** | voxtral-mini-latest | Yes | No | Yes |
+| **Soniox** | stt-rt-v4 | Yes | Yes | Yes |
+| **Fireworks AI** | whisper-v3 | Yes | Yes | Yes |
+| **Cartesia** | ink-whisper | No | No | No |
+| **Custom / Ollama** | User-configured | No | No | No |
+
+### Setting Up a Cloud Provider
+
+1. Open **Settings → Models → My Models**
+2. Select a provider from the dropdown
+3. Enter your API key (click the console link to get one if needed)
+4. Click **Test Connection** to verify
+5. Configure provider-specific options (language, temperature, etc.)
+
+### Provider Options
+
+Available options vary by provider. Common ones include:
+
+- **Language** — set a specific language or leave on auto-detect
+- **Temperature** — controls randomness (lower = more deterministic)
+- **Prompt / Glossary** — provide context to improve accuracy (see [Dictionary](/dictionary))
+- **Speaker Diarization** — identify different speakers in the audio
+- **Realtime Streaming** — show text incrementally as you speak
+
+## Switching Providers
+
+Switch between providers from the main interface:
+
+1. Click the current provider name in the sidebar
+2. Select from your configured cloud providers or downloaded local models
+
+Settings for each provider are saved independently — switching doesn't lose your configuration.

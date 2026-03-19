@@ -145,7 +145,7 @@ export default function Home() {
                 Preview
               </a>
               <a
-                href="/docs"
+                href="https://docs.handless.elwin.cc"
                 className="text-sm text-muted transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded"
               >
                 Docs
@@ -222,7 +222,7 @@ export default function Home() {
                   Preview
                 </a>
                 <a
-                  href="/docs"
+                  href="https://docs.handless.elwin.cc"
                   onClick={() => setMenuOpen(false)}
                   className="text-sm text-muted py-2 transition-colors duration-150 hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
                 >

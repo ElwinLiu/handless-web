@@ -1,0 +1,56 @@
+---
+title: "Polish"
+description: "Use LLMs to clean up, reformat, or restructure your transcriptions."
+---
+
+Post-processing uses an LLM to clean up, reformat, or restructure your transcriptions after they're generated.
+
+## How It Works
+
+1. You speak and Handless transcribes your audio
+2. The raw transcription is sent to an LLM with your chosen prompt
+3. The LLM returns a cleaned-up version
+4. The polished text is pasted into your app
+
+## Providers
+
+Configure a post-processing provider in **Settings → Post-Processing**:
+
+| Provider | Notes |
+| --- | --- |
+| **OpenAI** | GPT-4o, GPT-4o-mini, and other models. |
+| **Anthropic** | Claude Sonnet, Haiku, and other models. |
+| **Groq** | Fast inference. Llama, Mixtral, and other models. |
+| **Cerebras** | Ultra-fast inference. |
+| **Gemini** | Google's Gemini models. |
+| **Z.AI** | xAI's Grok models. |
+| **OpenRouter** | Access many models via one API key. |
+| **Apple Intelligence** | On-device, Apple Silicon only. No API key needed. |
+| **Custom** | Any OpenAI-compatible endpoint. |
+
+## Built-in Prompts
+
+Three pre-built prompt levels to choose from:
+
+- **Mild — Correct Transcript** — fixes typos, punctuation, and obvious errors. Keeps your original wording.
+- **Medium — Improve Fluency** — smooths out filler words and awkward phrasing while preserving meaning.
+- **Aggressive — Restructure & Format** — rewrites for clarity, adds formatting (paragraphs, lists), and restructures as needed.
+
+## Custom Prompts
+
+Create your own prompts for specific use cases:
+
+1. Go to **Settings → Post-Processing**
+2. Click **Add Prompt**
+3. Write your instructions (e.g. "Format as bullet points" or "Translate to Spanish")
+4. Save and select it as your active prompt
+
+## Shortcut Binding
+
+Link specific prompts to keyboard shortcuts for fast switching:
+
+1. Go to **Settings → Shortcuts**
+2. Add a new shortcut
+3. Assign a post-processing prompt to it
+
+This lets you use different polish levels without changing settings. For example, <kbd>Fn</kbd> for raw transcription and <kbd>Option</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd> for polished output.

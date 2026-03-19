@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: "Handless — Speech to Text for macOS",
   description:
     "Fast speech-to-text for macOS. Go fully local or bring your own API keys. Press a shortcut, speak, get text in any app.",
-  metadataBase: new URL("https://handless.app"),
+  metadataBase: new URL("https://handless.elwin.cc"),
   openGraph: {
     title: "Handless — Speech to Text for macOS",
     description:

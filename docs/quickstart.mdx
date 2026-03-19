@@ -1,0 +1,56 @@
+---
+title: "Quick Start"
+description: "Get up and running with Handless in under a minute."
+---
+
+## Download & Install
+
+1. Download the latest `.dmg` from [GitHub Releases](https://github.com/ElwinLiu/handless/releases/latest)
+2. Open the DMG and drag **Handless** to your Applications folder
+3. Launch Handless from Applications
+
+## Grant Permissions
+
+Handless needs two macOS permissions:
+
+- **Microphone** — to capture your voice
+- **Accessibility** — to paste transcribed text into other apps
+
+You'll be prompted on first launch. You can also grant these in **System Settings → Privacy & Security**.
+
+## Your First Transcription
+
+1. Press <kbd>Fn</kbd> to start recording
+2. Speak naturally
+3. Press <kbd>Fn</kbd> again (or release if using hold mode)
+4. Text appears in whatever app is focused
+
+By default, Handless uses a local Whisper model. No internet required — your audio never leaves your Mac.
+
+## Try a Cloud Provider
+
+For better accuracy or broader language support:
+
+1. Open Settings → **Models** tab
+2. Select a provider (e.g. OpenAI, Deepgram, Groq)
+3. Paste your API key and click **Test Connection**
+4. Select the provider from the main interface
+
+See [Providers](/providers) for the full list and setup details.
+
+## Add Post-Processing
+
+Clean up transcriptions with an LLM:
+
+1. Open Settings → **Post-Processing** tab
+2. Enable post-processing and select a provider
+3. Choose a prompt level: Mild, Medium, or Aggressive
+4. Press <kbd>Option</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd> to transcribe with polish
+
+See [Polish](/polish) for more details.
+
+## Next Steps
+
+- [Customize keyboard shortcuts](/shortcuts)
+- [Add custom terms to your dictionary](/dictionary)
+- [Explore all configuration options](/configuration)

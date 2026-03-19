@@ -31,6 +31,10 @@ rm -rf .next && npx tsc --noEmit && npx next build
 - `next build` — catches type + build/compilation issues
 - Neither catches runtime CSS or hydration bugs — visually inspect for those
 
+## Domain
+
+Production domain: `handless.elwin.cc` (docs: `docs.handless.elwin.cc`)
+
 ## Architecture
 
 Marketing/landing site for **Handless**, a macOS speech-to-text app. Next.js 15 App Router, React 19, Tailwind CSS 4, Motion (framer-motion).

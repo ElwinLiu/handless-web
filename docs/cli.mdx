@@ -1,0 +1,38 @@
+---
+title: "CLI"
+description: "Control Handless from the command line."
+---
+
+Control Handless from the command line for automation and scripting.
+
+## Available Flags
+
+| Flag | Description |
+| --- | --- |
+| `--toggle-transcription` | Toggle recording on/off |
+| `--toggle-post-process` | Toggle recording with post-processing |
+| `--cancel` | Cancel the current operation |
+| `--start-hidden` | Launch without showing the window |
+| `--no-tray` | Launch without a menu bar icon |
+| `--debug` | Enable verbose debug logging |
+
+## Examples
+
+```bash
+# Start a transcription from the terminal
+handless --toggle-transcription
+
+# Record with post-processing
+handless --toggle-post-process
+
+# Cancel current recording
+handless --cancel
+
+# Launch in the background
+handless --start-hidden --no-tray
+
+# Debug mode
+handless --debug
+```
+
+These flags are useful for binding Handless actions to tools like Raycast, Alfred, Hammerspoon, or shell scripts.
