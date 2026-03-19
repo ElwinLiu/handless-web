@@ -119,12 +119,13 @@ export default function Home() {
               className="flex items-center gap-2.5"
               aria-label="Handless home"
             >
-              <svg width={28} height={20} viewBox="0 -32 90 64" fill="currentColor" className="text-accent">
-                <rect x="0"  y="-5"  width="10" height="10" rx="5" opacity="0.5"/>
-                <rect x="20" y="-18" width="10" height="36" rx="4" opacity="0.75"/>
-                <rect x="40" y="-32" width="10" height="64" rx="4" opacity="1"/>
-                <rect x="60" y="-18" width="10" height="36" rx="4" opacity="0.75"/>
-                <rect x="80" y="-5"  width="10" height="10" rx="5" opacity="0.5"/>
+              <svg width={22} height={20} viewBox="0 -36 78 72" fill="currentColor" className="text-accent">
+                <rect x="0"  y="-8"  width="8" height="16" rx="4" opacity="0.53"/>
+                <rect x="14" y="-16" width="8" height="32" rx="4" opacity="0.67"/>
+                <rect x="28" y="-36" width="8" height="72" rx="4" opacity="1"/>
+                <rect x="42" y="-24" width="8" height="48" rx="4" opacity="0.8"/>
+                <rect x="56" y="-12" width="8" height="24" rx="4" opacity="0.6"/>
+                <rect x="70" y="-8"  width="8" height="16" rx="4" opacity="0.53"/>
               </svg>
               <span className="text-lg font-semibold tracking-tight">
                 Handless
@@ -541,12 +542,13 @@ export default function Home() {
         <footer className="border-t border-border px-6 py-8">
           <div className="mx-auto flex max-w-6xl items-center justify-between">
             <div className="flex items-center gap-2">
-              <svg width={20} height={14} viewBox="0 -32 90 64" fill="currentColor" className="text-accent">
-                <rect x="0"  y="-5"  width="10" height="10" rx="5" opacity="0.5"/>
-                <rect x="20" y="-18" width="10" height="36" rx="4" opacity="0.75"/>
-                <rect x="40" y="-32" width="10" height="64" rx="4" opacity="1"/>
-                <rect x="60" y="-18" width="10" height="36" rx="4" opacity="0.75"/>
-                <rect x="80" y="-5"  width="10" height="10" rx="5" opacity="0.5"/>
+              <svg width={15} height={14} viewBox="0 -36 78 72" fill="currentColor" className="text-accent">
+                <rect x="0"  y="-8"  width="8" height="16" rx="4" opacity="0.53"/>
+                <rect x="14" y="-16" width="8" height="32" rx="4" opacity="0.67"/>
+                <rect x="28" y="-36" width="8" height="72" rx="4" opacity="1"/>
+                <rect x="42" y="-24" width="8" height="48" rx="4" opacity="0.8"/>
+                <rect x="56" y="-12" width="8" height="24" rx="4" opacity="0.6"/>
+                <rect x="70" y="-8"  width="8" height="16" rx="4" opacity="0.53"/>
               </svg>
               <span className="text-xs text-muted">Handless</span>
             </div>
