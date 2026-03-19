@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Instrument_Serif } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import { ThemeProvider } from "./components/ThemeProvider";
 import "./globals.css";
 
@@ -45,11 +46,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${instrumentSerif.variable} ${GeistSans.variable}`}
+      className={`${dmSans.variable} ${instrumentSerif.variable} ${GeistSans.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
     >
       <head>
-        <meta name="theme-color" content="#080604" />
+        <meta name="theme-color" content="#080604" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#faf8f6" media="(prefers-color-scheme: light)" />
       </head>
       <body className="min-h-screen antialiased">
         <ThemeProvider>{children}</ThemeProvider>

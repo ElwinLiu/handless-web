@@ -273,8 +273,8 @@ export default function WorkflowDiagram() {
               </feMerge>
             </filter>
           </defs>
-          {lines.map((l) => (
-            <g key={l.d}>
+          {lines.map((l, i) => (
+            <g key={i}>
               <path
                 d={l.d}
                 stroke="rgba(212,98,42,0.25)"
