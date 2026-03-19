@@ -1,5 +1,5 @@
 {
-  "$schema": "https://mintlify.com/schema.json",
+  "$schema": "https://mintlify.com/docs.json",
   "name": "Handless",
   "logo": {
     "dark": "/logo-dark.svg",
@@ -10,11 +10,7 @@
   "colors": {
     "primary": "#d4622a",
     "light": "#ef6f2f",
-    "dark": "#c45520",
-    "anchors": {
-      "from": "#d4622a",
-      "to": "#ef6f2f"
-    }
+    "dark": "#c45520"
   },
   "topbarLinks": [
     {
@@ -26,13 +22,6 @@
     "name": "GitHub",
     "url": "https://github.com/ElwinLiu/handless"
   },
-  "anchors": [
-    {
-      "name": "GitHub",
-      "icon": "github",
-      "url": "https://github.com/ElwinLiu/handless"
-    }
-  ],
   "navigation": [
     {
       "group": "Getting Started",
