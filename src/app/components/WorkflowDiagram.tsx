@@ -37,7 +37,12 @@ const PROMPTS = [
   { id: "aggressive", name: "Aggressive", desc: "Full rewrite for clarity" },
 ];
 
-/* ─── Provider brand icons (Simple Icons / official SVGs, viewBox 0 0 24 24 unless noted) ─── */
+const ALL_PROMPTS = [
+  ...PROMPTS,
+  { id: "custom", name: "Custom", desc: "Write your own" },
+];
+
+/* ─── Provider brand icons ─── */
 
 const PI: Record<string, { vb?: string; d: string[] }> = {
   openai: {
@@ -118,15 +123,11 @@ const PI: Record<string, { vb?: string; d: string[] }> = {
       "M183.042 337.641C136.519 291.294 144.54 219.567 184.236 178.203C213.59 147.59 261.683 135.096 303.666 153.464L348.755 131.75C340.632 125.627 330.221 119.042 318.275 114.414C264.277 91.2407 199.63 102.774 155.735 148.516C113.513 192.549 100.236 260.254 123.036 318.027C140.069 361.206 112.148 391.748 84.0229 422.575C74.0561 433.503 64.0553 444.431 56 456L183.007 337.677",
     ],
   },
-  /* Placeholder dot for providers without public brand SVGs */
   _dot: {
-    d: [
-      "M12 6a6 6 0 100 12 6 6 0 000-12z",
-    ],
+    d: ["M12 6a6 6 0 100 12 6 6 0 000-12z"],
   },
 };
 
-/** Maps provider list id → icon key in PI. */
 const ICON_KEY: Record<string, string> = {
   whisper: "openai",
   parakeet: "nvidia",
@@ -158,14 +159,62 @@ function ProviderIcon({ id, size = 14 }: { id: string; size?: number }) {
   );
 }
 
+function WaveBars({ fast = false, count = 4 }: { fast?: boolean; count?: number }) {
+  return (
+    <div className="flex items-end gap-[2px] h-4">
+      {Array.from({ length: count }, (_, i) => (
+        <div
+          key={i}
+          className="w-[2.5px] rounded-full bg-accent/50 origin-bottom"
+          style={{
+            height: 14,
+            animation: `wf-wave ${fast ? "0.6s" : "1.8s"} ease-in-out ${i * (fast ? 0.1 : 0.25)}s infinite`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function MobileArrow() {
+  return (
+    <div className="flex justify-center py-1 text-muted/30">
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </div>
+  );
+}
+
 export default function WorkflowDiagram() {
   const [engine, setEngine] = useState("openai-stt");
-  const [llm, setLlm] = useState("openrouter");
+  const [llm, setLlm] = useState("anthropic");
   const [prompt, setPrompt] = useState("aggressive");
+  const [recording, setRecording] = useState(false);
 
+  // Auto-stop recording after 3 seconds
+  useEffect(() => {
+    if (!recording) return;
+    const t = setTimeout(() => setRecording(false), 3000);
+    return () => clearTimeout(t);
+  }, [recording]);
+
+  /* ── Bezier flow lines (desktop) ── */
   const containerRef = useRef<HTMLDivElement>(null);
   const nodeMap = useRef(new Map<string, HTMLElement>());
   const [lines, setLines] = useState<{ key: string; d: string }[]>([]);
+  const [polishLines, setPolishLines] = useState<
+    { id: string; x: number; y1: number; y2: number; active: boolean }[]
+  >([]);
 
   const nodeRef = useCallback(
     (id: string) => (el: HTMLElement | null) => {
@@ -187,14 +236,15 @@ export default function WorkflowDiagram() {
         if (!a || !b) return null;
         const ar = a.getBoundingClientRect();
         const br = b.getBoundingClientRect();
-        const x1 = ar.right - cr.left;
-        const y1 = ar.top - cr.top + ar.height / 2;
-        const x2 = br.left - cr.left;
-        const y2 = br.top - cr.top + br.height / 2;
-        const cp = (x2 - x1) * 0.45;
+        // Connect bottom-center of source → top-center of target
+        const x1 = ar.left - cr.left + ar.width / 2;
+        const y1 = ar.bottom - cr.top;
+        const x2 = br.left - cr.left + br.width / 2;
+        const y2 = br.top - cr.top;
+        const cp = (y2 - y1) * 0.45;
         return {
           key,
-          d: `M${x1},${y1} C${x1 + cp},${y1} ${x2 - cp},${y2} ${x2},${y2}`,
+          d: `M${x1},${y1} C${x1},${y1 + cp} ${x2},${y2 - cp} ${x2},${y2}`,
         };
       };
 
@@ -203,9 +253,35 @@ export default function WorkflowDiagram() {
           bezier("input", `e-${engine}`, "a"),
           bezier(`e-${engine}`, `l-${llm}`, "b"),
           bezier(`l-${llm}`, `p-${prompt}`, "c"),
-          bezier(`p-${prompt}`, "output", "d"),
         ].filter(Boolean) as { key: string; d: string }[]
       );
+
+      // Vertical lines from each polish card down to the output bar
+      const bar = nodeMap.current.get("output-bar");
+      if (bar) {
+        const barR = bar.getBoundingClientRect();
+        const barY = barR.top - cr.top;
+        setPolishLines(
+          ALL_PROMPTS.map((p) => {
+            const el = nodeMap.current.get(`p-${p.id}`);
+            if (!el) return null;
+            const r = el.getBoundingClientRect();
+            return {
+              id: p.id,
+              x: r.left - cr.left + r.width / 2,
+              y1: r.bottom - cr.top,
+              y2: barY,
+              active: p.id === prompt,
+            };
+          }).filter(Boolean) as {
+            id: string;
+            x: number;
+            y1: number;
+            y2: number;
+            active: boolean;
+          }[]
+        );
+      }
     };
 
     requestAnimationFrame(recalc);
@@ -214,78 +290,47 @@ export default function WorkflowDiagram() {
     return () => ro.disconnect();
   }, [engine, llm, prompt]);
 
-  const itemCls = (active: boolean, withDesc = false) =>
+  const selectedEngine = ENGINES.find((e) => e.id === engine);
+  const selectedLlm = LLMS.find((l) => l.id === llm);
+  const selectedPrompt = ALL_PROMPTS.find((p) => p.id === prompt);
+
+  const chipCls = (active: boolean) =>
     [
-      "w-full text-left rounded-lg text-[13px] transition-all duration-200",
-      withDesc ? "px-3 py-2" : "px-3 py-1.5",
+      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] leading-tight transition-all duration-200",
       active
-        ? "bg-[rgba(212,98,42,0.1)] border border-[rgba(212,98,42,0.35)] shadow-[0_0_16px_rgba(212,98,42,0.06)]"
-        : "border border-transparent hover:bg-[rgba(200,170,140,0.06)]",
+        ? "bg-[rgba(212,98,42,0.1)] border border-[rgba(212,98,42,0.3)] text-accent font-medium shadow-[0_0_12px_rgba(212,98,42,0.06)]"
+        : "border border-transparent text-muted/60 hover:text-text hover:bg-[rgba(200,170,140,0.06)]",
     ].join(" ");
 
-  const nameCls = (active: boolean) =>
-    active
-      ? "text-accent font-medium transition-colors duration-200"
-      : "text-muted hover:text-text transition-colors duration-200";
+  const polishCls = (active: boolean) =>
+    [
+      "flex-1 text-center px-2 py-2.5 rounded-lg text-[11px] transition-all duration-200",
+      active
+        ? "bg-[rgba(212,98,42,0.1)] border border-[rgba(212,98,42,0.3)] text-accent font-medium shadow-[0_0_12px_rgba(212,98,42,0.06)]"
+        : "border border-transparent text-muted/60 hover:text-text hover:bg-[rgba(200,170,140,0.06)]",
+    ].join(" ");
 
-  const MicIcon = ({ size = 22 }: { size?: number }) => (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="text-accent"
-    >
-      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-      <line x1="12" x2="12" y1="19" y2="22" />
-    </svg>
-  );
+  const mobileChipCls = (active: boolean) =>
+    [
+      "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] transition-all duration-200",
+      active
+        ? "bg-[rgba(212,98,42,0.1)] border border-[rgba(212,98,42,0.35)] text-accent font-medium"
+        : "border border-transparent text-muted",
+    ].join(" ");
 
-  const DocIcon = ({ size = 22 }: { size?: number }) => (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="text-accent"
-    >
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-      <line x1="16" x2="8" y1="13" y2="13" />
-      <line x1="16" x2="8" y1="17" y2="17" />
-    </svg>
-  );
-
-  const Arrow = () => (
-    <div className="flex justify-center py-1 text-muted/30">
-      <svg
-        width="14"
-        height="14"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <polyline points="6 9 12 15 18 9" />
-      </svg>
-    </div>
-  );
+  const mobilePromptCls = (active: boolean) =>
+    [
+      "w-full text-left px-3 py-2 rounded-lg text-[13px] transition-all duration-200",
+      active
+        ? "bg-[rgba(212,98,42,0.1)] border border-[rgba(212,98,42,0.35)] text-accent font-medium"
+        : "border border-transparent text-muted",
+    ].join(" ");
 
   return (
     <div ref={containerRef} className="relative">
       {/* ── Desktop ── */}
-      <div className="hidden lg:block">
+      <div className="hidden lg:flex flex-col gap-5">
+        {/* Bezier flow SVG overlay */}
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
           style={{ zIndex: 1 }}
@@ -300,174 +345,215 @@ export default function WorkflowDiagram() {
               </feMerge>
             </filter>
           </defs>
-          {lines.map((l, i) => (
-            <g key={i}>
+          {lines.map((l) => (
+            <g key={l.key}>
               <path
                 d={l.d}
                 stroke="rgba(212,98,42,0.25)"
                 strokeWidth="1.5"
                 filter="url(#wf-glow)"
               />
-              <circle r="2" fill="rgba(212,98,42,0.55)">
+              <circle r="2.5" fill="rgba(212,98,42,0.55)">
                 <animateMotion
-                  dur="2.5s"
+                  dur={recording ? "1.5s" : "2.5s"}
                   repeatCount="indefinite"
                   path={l.d}
                 />
               </circle>
             </g>
           ))}
+          {/* Vertical lines from each polish card to the output bar */}
+          {polishLines.map((pl) => (
+            <g key={`pl-${pl.id}`}>
+              {/* Glow layer for active line */}
+              {pl.active && (
+                <line
+                  x1={pl.x}
+                  y1={pl.y1}
+                  x2={pl.x}
+                  y2={pl.y2}
+                  stroke="rgba(212,98,42,0.3)"
+                  strokeWidth="6"
+                  filter="url(#wf-glow)"
+                />
+              )}
+              {/* Crisp line on top */}
+              <line
+                x1={pl.x}
+                y1={pl.y1}
+                x2={pl.x}
+                y2={pl.y2}
+                stroke={
+                  pl.active
+                    ? "rgba(212,98,42,0.7)"
+                    : "rgba(212,98,42,0.08)"
+                }
+                strokeWidth={pl.active ? 2 : 1}
+              />
+              {pl.active && (
+                <circle r="2.5" fill="rgba(212,98,42,0.55)">
+                  <animateMotion
+                    dur={recording ? "0.6s" : "1s"}
+                    repeatCount="indefinite"
+                    path={`M${pl.x},${pl.y1} L${pl.x},${pl.y2}`}
+                  />
+                </circle>
+              )}
+            </g>
+          ))}
         </svg>
 
-        <div
-          className="flex items-start gap-6 justify-center"
-          style={{ position: "relative", zIndex: 2 }}
+        {/* Voice input */}
+        <button
+          ref={nodeRef("input")}
+          onClick={() => setRecording((r) => !r)}
+          className="group flex items-center gap-3 text-left w-fit relative"
+          style={{ zIndex: 2 }}
         >
-          {/* Voice input */}
-          <div className="flex flex-col items-center gap-2 shrink-0 self-center mr-6">
-            <div
-              ref={nodeRef("input")}
-              className="w-14 h-14 rounded-full bg-glass-bg border border-[rgba(212,98,42,0.2)] flex items-center justify-center"
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-full border border-accent/20 bg-accent/5 transition-all duration-200 group-hover:border-accent/40 group-hover:bg-accent/10 shrink-0">
+            <svg
+              width={18}
+              height={18}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-accent"
             >
-              <MicIcon />
-            </div>
-            <span className="text-[10px] text-muted uppercase tracking-widest">
-              Voice
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" x2="12" y1="19" y2="22" />
+            </svg>
+            {recording && (
+              <span
+                className="absolute inset-0 rounded-full border border-accent/30"
+                style={{ animation: "wf-pulse 1.5s ease-out infinite" }}
+              />
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <WaveBars fast={recording} />
+            <span className="text-xs font-medium text-text group-hover:text-accent transition-colors duration-200">
+              Your voice
             </span>
           </div>
+        </button>
 
-          {/* STT Engines */}
-          <div className="flex-1 min-w-0 max-w-[180px]">
-            <p className="text-xs font-semibold text-text mb-2 pl-1">
-              STT Providers
-            </p>
-            <div className="space-y-1">
-              <p className="text-[9px] text-muted/30 uppercase tracking-widest pl-1 pb-0.5">
-                Local
-              </p>
-              {ENGINES.filter((e) => e.tag === "local").map((e) => (
-                <button
-                  key={e.id}
-                  ref={nodeRef(`e-${e.id}`)}
-                  onClick={() => setEngine(e.id)}
-                  className={itemCls(engine === e.id)}
-                >
-                  <span className={`inline-flex items-center gap-1.5 ${nameCls(engine === e.id)}`}>
-                    <ProviderIcon id={e.id} size={14} />
-                    {e.name}
-                  </span>
-                </button>
-              ))}
-              <p className="text-[9px] text-muted/30 uppercase tracking-widest pl-1 pt-1 pb-0.5">
-                Cloud
-              </p>
-              {ENGINES.filter((e) => e.tag === "cloud").map((e) => (
-                <button
-                  key={e.id}
-                  ref={nodeRef(`e-${e.id}`)}
-                  onClick={() => setEngine(e.id)}
-                  className={itemCls(engine === e.id)}
-                >
-                  <span className={`inline-flex items-center gap-1.5 ${nameCls(engine === e.id)}`}>
-                    <ProviderIcon id={e.id} size={14} />
-                    {e.name}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* LLM Providers */}
-          <div className="flex-1 min-w-0 max-w-[180px]">
-            <p className="text-xs font-semibold text-text mb-2 pl-1">
-              LLM Providers
-            </p>
-            <div className="space-y-1">
-              {LLMS.map((l) => (
-                <button
-                  key={l.id}
-                  ref={nodeRef(`l-${l.id}`)}
-                  onClick={() => setLlm(l.id)}
-                  className={itemCls(llm === l.id)}
-                >
-                  <span className={`inline-flex items-center gap-1.5 ${nameCls(llm === l.id)}`}>
-                    <ProviderIcon id={l.id} size={14} />
-                    {l.name}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Polish Prompts */}
-          <div className="flex-1 min-w-0 max-w-[200px]">
-            <p className="text-xs font-semibold text-text mb-2 pl-1">
-              Polish Prompt
-            </p>
-            <div className="space-y-1">
-              {PROMPTS.map((p) => (
-                <button
-                  key={p.id}
-                  ref={nodeRef(`p-${p.id}`)}
-                  onClick={() => setPrompt(p.id)}
-                  className={itemCls(prompt === p.id, true)}
-                >
-                  <span className={nameCls(prompt === p.id)}>{p.name}</span>
-                  <span
-                    className={`block text-[11px] mt-0.5 transition-colors duration-200 ${
-                      prompt === p.id ? "text-muted/70" : "text-muted/40"
-                    }`}
-                  >
-                    {p.desc}
-                  </span>
-                </button>
-              ))}
-              <div className="border-t border-border my-1" />
+        {/* STT Engine */}
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <p className="text-[10px] font-medium text-muted/50 uppercase tracking-wider mb-1.5 pl-0.5">
+            STT Engine
+          </p>
+          <div className="flex flex-wrap gap-1">
+            {ENGINES.map((e) => (
               <button
-                ref={nodeRef("p-custom")}
-                onClick={() => setPrompt("custom")}
-                className={itemCls(prompt === "custom", true)}
+                key={e.id}
+                ref={nodeRef(`e-${e.id}`)}
+                onClick={() => setEngine(e.id)}
+                className={chipCls(engine === e.id)}
               >
-                <span className={nameCls(prompt === "custom")}>Custom</span>
+                <ProviderIcon id={e.id} size={11} />
+                {e.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* LLM Provider */}
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <p className="text-[10px] font-medium text-muted/50 uppercase tracking-wider mb-1.5 pl-0.5">
+            LLM Provider
+          </p>
+          <div className="flex flex-wrap gap-1">
+            {LLMS.map((l) => (
+              <button
+                key={l.id}
+                ref={nodeRef(`l-${l.id}`)}
+                onClick={() => setLlm(l.id)}
+                className={chipCls(llm === l.id)}
+              >
+                <ProviderIcon id={l.id} size={11} />
+                {l.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Polish Level + Output bar */}
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <p className="text-[10px] font-medium text-muted/50 uppercase tracking-wider mb-1.5 pl-0.5">
+            Polish Level
+          </p>
+          <div className="flex gap-1.5">
+            {ALL_PROMPTS.map((p) => (
+              <button
+                key={p.id}
+                ref={nodeRef(`p-${p.id}`)}
+                onClick={() => setPrompt(p.id)}
+                className={polishCls(prompt === p.id)}
+              >
+                <span className="block">{p.name}</span>
                 <span
-                  className={`block text-[11px] mt-0.5 transition-colors duration-200 ${
-                    prompt === "custom" ? "text-muted/70" : "text-muted/40"
+                  className={`block text-[9px] mt-0.5 transition-colors duration-200 ${
+                    prompt === p.id ? "text-muted/60" : "text-muted/30"
                   }`}
                 >
-                  Write your own prompt
+                  {p.desc}
                 </span>
               </button>
-            </div>
+            ))}
           </div>
 
-          {/* Output */}
-          <div className="flex flex-col items-center gap-2 shrink-0 self-center ml-6">
-            <div
-              ref={nodeRef("output")}
-              className="w-14 h-14 rounded-full bg-glass-bg border border-[rgba(212,98,42,0.2)] flex items-center justify-center"
-            >
-              <DocIcon />
-            </div>
-            <span className="text-[10px] text-muted uppercase tracking-widest">
-              Text
-            </span>
-          </div>
+          {/* Spacer for vertical connector lines */}
+          <div className="h-8" />
+
+          {/* Output bar */}
+          <div
+            ref={nodeRef("output-bar")}
+            className="h-[2px] rounded-full bg-text/15"
+          />
+          <p className="text-[10px] text-muted/40 mt-2 text-center">
+            {selectedEngine?.name} → {selectedLlm?.name} → {selectedPrompt?.name} → <span className="text-text/70 font-medium">Polished text</span>
+            <span
+              className="inline-block w-[1.5px] h-3 bg-accent/40 ml-0.5 align-middle"
+              style={{ animation: "wf-blink 1s step-end infinite" }}
+            />
+          </p>
         </div>
       </div>
 
       {/* ── Mobile ── */}
       <div className="lg:hidden space-y-2">
-        {/* Input */}
+        {/* Voice input */}
         <div className="flex items-center gap-3 px-1">
-          <div className="w-10 h-10 rounded-full bg-glass-bg border border-[rgba(212,98,42,0.2)] flex items-center justify-center shrink-0">
-            <MicIcon size={18} />
+          <div className="flex items-center justify-center w-10 h-10 rounded-full border border-accent/20 bg-accent/5 shrink-0">
+            <svg
+              width={18}
+              height={18}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-accent"
+            >
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" x2="12" y1="19" y2="22" />
+            </svg>
           </div>
-          <span className="text-sm text-muted">Your voice</span>
+          <div className="flex items-center gap-2">
+            <WaveBars />
+            <span className="text-sm text-muted">Your voice</span>
+          </div>
         </div>
 
-        <Arrow />
+        <MobileArrow />
 
-        {/* Engines */}
+        {/* STT Engines */}
         <div>
           <p className="text-xs font-semibold text-text mb-2 pl-1">
             STT Providers
@@ -477,11 +563,7 @@ export default function WorkflowDiagram() {
               <button
                 key={e.id}
                 onClick={() => setEngine(e.id)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] transition-all duration-200 ${
-                  engine === e.id
-                    ? "bg-[rgba(212,98,42,0.1)] border border-[rgba(212,98,42,0.35)] text-accent font-medium"
-                    : "border border-transparent text-muted"
-                }`}
+                className={mobileChipCls(engine === e.id)}
               >
                 <ProviderIcon id={e.id} size={14} />
                 {e.name}
@@ -490,9 +572,9 @@ export default function WorkflowDiagram() {
           </div>
         </div>
 
-        <Arrow />
+        <MobileArrow />
 
-        {/* LLMs */}
+        {/* LLM Providers */}
         <div>
           <p className="text-xs font-semibold text-text mb-2 pl-1">
             LLM Providers
@@ -502,11 +584,7 @@ export default function WorkflowDiagram() {
               <button
                 key={l.id}
                 onClick={() => setLlm(l.id)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] transition-all duration-200 ${
-                  llm === l.id
-                    ? "bg-[rgba(212,98,42,0.1)] border border-[rgba(212,98,42,0.35)] text-accent font-medium"
-                    : "border border-transparent text-muted"
-                }`}
+                className={mobileChipCls(llm === l.id)}
               >
                 <ProviderIcon id={l.id} size={14} />
                 {l.name}
@@ -515,9 +593,9 @@ export default function WorkflowDiagram() {
           </div>
         </div>
 
-        <Arrow />
+        <MobileArrow />
 
-        {/* Prompts */}
+        {/* Polish Prompt */}
         <div>
           <p className="text-xs font-semibold text-text mb-2 pl-1">
             Polish Prompt
@@ -527,11 +605,7 @@ export default function WorkflowDiagram() {
               <button
                 key={p.id}
                 onClick={() => setPrompt(p.id)}
-                className={`w-full text-left px-3 py-2 rounded-lg text-[13px] transition-all duration-200 ${
-                  prompt === p.id
-                    ? "bg-[rgba(212,98,42,0.1)] border border-[rgba(212,98,42,0.35)] text-accent font-medium"
-                    : "border border-transparent text-muted"
-                }`}
+                className={mobilePromptCls(prompt === p.id)}
               >
                 <span>{p.name}</span>
                 <span
@@ -546,11 +620,7 @@ export default function WorkflowDiagram() {
             <div className="border-t border-border my-1" />
             <button
               onClick={() => setPrompt("custom")}
-              className={`w-full text-left px-3 py-2 rounded-lg text-[13px] transition-all duration-200 ${
-                prompt === "custom"
-                  ? "bg-[rgba(212,98,42,0.1)] border border-[rgba(212,98,42,0.35)] text-accent font-medium"
-                  : "border border-transparent text-muted"
-              }`}
+              className={mobilePromptCls(prompt === "custom")}
             >
               <span>Custom</span>
               <span
@@ -564,14 +634,37 @@ export default function WorkflowDiagram() {
           </div>
         </div>
 
-        <Arrow />
+        <MobileArrow />
 
-        {/* Output */}
+        {/* Text output */}
         <div className="flex items-center gap-3 px-1">
-          <div className="w-10 h-10 rounded-full bg-glass-bg border border-[rgba(212,98,42,0.2)] flex items-center justify-center shrink-0">
-            <DocIcon size={18} />
+          <div className="flex items-center justify-center w-10 h-10 rounded-full border border-accent/20 bg-accent/5 shrink-0">
+            <svg
+              width={18}
+              height={18}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-accent"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" x2="8" y1="13" y2="13" />
+              <line x1="16" x2="8" y1="17" y2="17" />
+            </svg>
           </div>
-          <span className="text-sm text-muted">Polished text</span>
+          <div>
+            <span className="text-sm text-muted">Polished text</span>
+            <span className="flex items-center text-[10px] text-muted/50">
+              <span
+                className="inline-block w-[1.5px] h-3 bg-accent/40 ml-0.5"
+                style={{ animation: "wf-blink 1s step-end infinite" }}
+              />
+            </span>
+          </div>
         </div>
       </div>
     </div>

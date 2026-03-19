@@ -468,6 +468,22 @@ body {
   100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
 }
 
+/* ── Workflow diagram animations ── */
+@keyframes wf-wave {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes wf-pulse {
+  0% { transform: scale(1); opacity: 0.3; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@keyframes wf-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sim-item {
     opacity: 1;
