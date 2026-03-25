@@ -5,7 +5,12 @@ import { useState, useRef, useEffect } from "react";
 const REPO = "ElwinLiu/handless";
 const RELEASES_URL = `https://github.com/${REPO}/releases/latest`;
 
-async function downloadForArch(arch: "aarch64" | "x64") {
+const ARCH_KEYWORDS: Record<string, string[]> = {
+  "apple-silicon": ["apple-silicon", "aarch64", "arm64"],
+  intel: ["intel", "x64", "x86_64"],
+};
+
+async function downloadForArch(arch: "apple-silicon" | "intel") {
   try {
     const res = await fetch(
       `https://api.github.com/repos/${REPO}/releases/latest`,
@@ -13,8 +18,11 @@ async function downloadForArch(arch: "aarch64" | "x64") {
     );
     if (!res.ok) throw new Error();
     const release = await res.json();
+    const keywords = ARCH_KEYWORDS[arch];
     const asset = release.assets?.find(
-      (a: { name: string }) => a.name.endsWith(".dmg") && a.name.includes(arch)
+      (a: { name: string }) =>
+        a.name.endsWith(".dmg") &&
+        keywords.some((kw) => a.name.includes(kw))
     );
     window.location.href = asset?.browser_download_url ?? RELEASES_URL;
   } catch {
@@ -89,7 +97,7 @@ export default function DownloadButton() {
             type="button"
             onClick={() => {
               setOpen(false);
-              downloadForArch("aarch64");
+              downloadForArch("apple-silicon");
             }}
             className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm text-text transition-colors hover:bg-glass-bg"
           >
@@ -102,7 +110,7 @@ export default function DownloadButton() {
             type="button"
             onClick={() => {
               setOpen(false);
-              downloadForArch("x64");
+              downloadForArch("intel");
             }}
             className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm text-text transition-colors hover:bg-glass-bg"
           >
